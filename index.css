@@ -1,11 +1,46 @@
-@font-face {
-    font-family: 'Work Sans', sans-serif;
-
+/*normalize*/
+h1, h2, h3, h4, h5, h6 {
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0; /* or ‘0 0 1em’ if you’re so inclined */
 }
+
+h1 {
+
+    font-size: 128px;
+    line-height: 124px;
+    letter-spacing: -5px;
+}
+
+h2 {
+
+    font-size: 58px;
+    line-height: 64px;
+    letter-spacing: -2.5px;
+    margin-bottom: 60px;
+}
+
+h3 {
+    font-size: 32px;
+    line-height: 44px;
+    margin-bottom: 32px;
+}
+
+h4 {
+    font-size: 20px;
+    line-height: 15px;
+    margin-bottom: 20px;
+}
+
 
 body {
     background-color: #111;
     -webkit-font-smoothing: antialiased;
     font-family: 'Work Sans', sans-serif;
     color: white;
+}
+
+main {
+    max-width: 984px;
+    margin: 60px auto;
 }
