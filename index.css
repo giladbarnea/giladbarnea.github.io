@@ -1,0 +1,11 @@
+@font-face {
+    font-family: 'Work Sans', sans-serif;
+
+}
+
+body {
+    background-color: #111;
+    -webkit-font-smoothing: antialiased;
+    font-family: 'Work Sans', sans-serif;
+    color: white;
+}
