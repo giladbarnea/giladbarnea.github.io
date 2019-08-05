@@ -1,9 +1,12 @@
 const body = elem({htmlElement: document.body});
+const main = elem({id: 'main'});
 const resumePageLink = elem({id: 'resume_page_link'});
 resumePageLink.pointerdown(() => {
-    window.location.assign('resume')
+    main
+        .empty()
+        .append(
+            elem({tag: 'h2'}).text('Resume')
+        )
 });
-// resumePageLink.addEventListener('click', () => {
-//     console.log('clicked resumePageLink');
-// });
+
 
