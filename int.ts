@@ -18,7 +18,7 @@ class Int extends Number {
     
     toString(radix?: number): string {
         let ret = super.toString(radix);
-        // if (globalLog) console.log(cc('bright magenta', `toString, returning: `), ret, {
+        // if (globalLog) console.log(util.cc('bright magenta', `toString, returning: `), ret, {
         //     'typeof ret': typeof ret,
         //     this: this,
         //     'typeof this': typeof this
@@ -29,7 +29,7 @@ class Int extends Number {
     
     valueOf(): number {
         let ret = super.valueOf();
-        if (globalLog) console.log(cc('bright magenta', 'valueOf, returning: '), ret, {
+        if (globalLog) console.log(util.cc('bright magenta', 'valueOf, returning: '), ret, {
             'typeof ret': typeof ret,
             this: this,
             'typeof this': typeof this
@@ -67,29 +67,34 @@ class Int extends Number {
                 let typeofnumber = typeof number;
                 if (typeofnumber === "number") {
                     if (parseFloat(number) - parseInt(number) === 0) {
-                        if (log) console.log(cc('magenta', `\tnumber is float, returning: ${number}`));
+                        if (log) console.log(util.cc('magenta', `\tnumber is float, returning: ${number}`));
                         return number
                     } else {
                         typeofnumber = 'float';
                     }
                 }
-                if (log) console.log(cc('bright yellow', `int(x.__int__()) returned non-int. TypeError`));
+                if (log) console.log(util.cc('bright yellow', `int(x.__int__()) returned non-int. TypeError`));
                 throw new TypeError(`__int__ returned non-int (type ${typeofnumber})`);
             },
             parseOptions(x: IntParam, base: IntParam, log?: boolean): [string | number, string | number] {
                 const typeofx = typeof x;
                 const typeofbase = typeof base;
                 if (base === undefined) { // all int({object}) tests
-                    if (log) console.log(cc('magenta', `\tbase === undefined, returning [x.x, x.base]`));
+                    if (log) console.log(util.cc('magenta', `\tbase === undefined, returning [x.x, x.base]`));
                     x = x as IntOptions;
                     return [x.x, x.base];
                 }
                 if (x === undefined) { // TODO: nothing reaches here
                     throw new Error('what');
-                    if (log) console.log(cc('blue', `\tx === undefined`), {base, typeofbase});
+                    if (log) console.log(util.cc('blue', `\tx === undefined`), {base, typeofbase});
                     return [base.x, base.base]
                 }
-                if (log) console.log(cc('blue', `\tneither x nor base are undefined`), {x, base, typeofx, typeofbase});
+                if (log) console.log(util.cc('blue', `\tneither x nor base are undefined`), {
+                    x,
+                    base,
+                    typeofx,
+                    typeofbase
+                });
                 let xinbase = false;
                 let baseinbase = false;
                 let xinx = false;
@@ -108,23 +113,23 @@ class Int extends Number {
                     baseinx = 'base' in x;
                     xinbase = 'x' in base;
                     baseinbase = 'base' in base;
-                    if (log) console.log(cc('blue', `\tbase and x are both objects`), {
+                    if (log) console.log(util.cc('blue', `\tbase and x are both objects`), {
                         xinbase,
                         baseinbase,
                         xinx,
                         baseinx
                     });
                     if ((xinbase && xinx) || (baseinbase && baseinx)) { // int({x: 0, base: 10}, {x: 1})
-                        if (log) console.log(cc('bright yellow', `\tkeyword argument repeated, TypeError`));
+                        if (log) console.log(util.cc('bright yellow', `\tkeyword argument repeated, TypeError`));
                         throw new SyntaxError("keyword argument repeated")
                     }
-                    if (log) console.log(cc('blue', `\tNo repeated kwarg`));
+                    if (log) console.log(util.cc('blue', `\tNo repeated kwarg`));
                     if (xinbase) { // int({base: 2}, {x: '100'})
-                        if (log) console.log(cc('magenta', `\txinbase, returning [base.x, x.base]`));
+                        if (log) console.log(util.cc('magenta', `\txinbase, returning [base.x, x.base]`));
                         return [base.x, x.base]
                     }
                     // int({x: '100'}, {base: 2})
-                    if (log) console.log(cc('magenta', `\txinx, returning [x.x, base.base]`));
+                    if (log) console.log(util.cc('magenta', `\txinx, returning [x.x, base.base]`));
                     return [x.x, base.base]
                 }
                 if (isBaseObject) { // all int(x, {object}) tests
@@ -132,26 +137,26 @@ class Int extends Number {
                     x = x as string | number;
                     xinbase = 'x' in base;
                     baseinbase = 'base' in base;
-                    if (log) console.log(cc('blue', `\tx is primitive. base is object.`), {xinbase, baseinbase});
+                    if (log) console.log(util.cc('blue', `\tx is primitive. base is object.`), {xinbase, baseinbase});
                     if (xinbase) {
                         
-                        if (log) console.log(cc('blue', `\txinbase`));
+                        if (log) console.log(util.cc('blue', `\txinbase`));
                         if (baseinbase) { // int('100', {x: '100', base: 10})
                             
-                            if (log) console.log(cc('bright yellow', `\txinbase && baseinbase, TypeError`));
+                            if (log) console.log(util.cc('bright yellow', `\txinbase && baseinbase, TypeError`));
                             throw new TypeError(`int() takes at most 2 arguments (3 given)`)
                         }
                         // int('100', {x: '100'})
                         // TODO: position (2)
-                        if (log) console.log(cc('bright yellow', `\txinbase, TypeError`));
+                        if (log) console.log(util.cc('bright yellow', `\txinbase, TypeError`));
                         throw new TypeError(`Argument given by name ('x') and position (1)`)
                     }
                     if (baseinbase) { // int('100', {base: 2})
-                        if (log) console.log(cc('magenta', `\tbaseinbase, returning [x, base.base]`));
+                        if (log) console.log(util.cc('magenta', `\tbaseinbase, returning [x, base.base]`));
                         return [x, base.base];
                     }
                     // int('100', {FOO: 2})
-                    if (log) console.log(cc('magenta', `!\txinbase && !baseinbase, returning [x, undefined]`));
+                    if (log) console.log(util.cc('magenta', `!\txinbase && !baseinbase, returning [x, undefined]`));
                     return [x, undefined]
                 }
                 // all int({object}, base) tests
@@ -159,18 +164,18 @@ class Int extends Number {
                 base = base as string | number;
                 xinx = 'x' in x;
                 baseinx = 'base' in x;
-                if (log) console.log(cc('blue', `\tbase is primitive. x is object`), {xinx, baseinx});
+                if (log) console.log(util.cc('blue', `\tbase is primitive. x is object`), {xinx, baseinx});
                 if (baseinx) {
-                    if (log) console.log(cc('blue', `\tbaseinx`));
+                    if (log) console.log(util.cc('blue', `\tbaseinx`));
                     if (xinx) { // int({x: '100', base: 2}, 3)
-                        if (log) console.log(cc('bright yellow', `\txinbase && baseinbase, TypeError`));
+                        if (log) console.log(util.cc('bright yellow', `\txinbase && baseinbase, TypeError`));
                         throw new TypeError(`int() takes at most 2 arguments (3 given)`)
                     }
                     // int({base: 2}, 3)
-                    if (log) console.log(cc('bright yellow', `\tbaseinx, TypeError`));
+                    if (log) console.log(util.cc('bright yellow', `\tbaseinx, TypeError`));
                     throw new TypeError(`Argument given by name ('base') and position (1)`)
                 }
-                if (log) console.log(cc('magenta', `\treturning [x.x, base]`));
+                if (log) console.log(util.cc('magenta', `\treturning [x.x, base]`));
                 return [x.x, base]
                 
                 
@@ -236,66 +241,66 @@ class Int extends Number {
     
     constructor(x: IntParam = undefined, base?: IntParam, log?: boolean) {
         globalLog = log;
-        if (log) console.log(cc('black', 'constructor before ArgsParser'), {x, base, log});
+        if (log) console.log(util.cc('black', 'constructor before ArgsParser'), {x, base, log});
         if (Int.ArgsParser.isIntable(x)) {
-            if (log) console.log(cc('blue', 'x is Intable'));
+            if (log) console.log(util.cc('blue', 'x is Intable'));
             const number = Int.ArgsParser.parseIntable(x, log);
             super(number);
-            if (log) console.log(cc('bright magenta', `super(parseIntable(x)) and return. this: ${this}`));
+            if (log) console.log(util.cc('bright magenta', `super(parseIntable(x)) and return. this: ${this}`));
             return
         }
         if (Int.ArgsParser.isOptions(x) || Int.ArgsParser.isOptions(base)) { // keep after instanceof Int check
-            if (log) console.log(cc('blue', `Got objects, calling Int.OptionsParser.parse(x, base)`));
+            if (log) console.log(util.cc('blue', `Got objects, calling Int.OptionsParser.parse(x, base)`));
             [x, base] = Int.ArgsParser.parseOptions(x, base, log);
-            if (log) console.log(cc('cyan', `Int.OptionsParser.parse(x, base) => x: ${x}, base: ${base}`));
+            if (log) console.log(util.cc('cyan', `Int.OptionsParser.parse(x, base) => x: ${x}, base: ${base}`));
         }
         
         const typeofx = typeof x;
         const typeofbase = typeof base;
         let parsedInt = parseInt(x, base); // NaN if fails
         const origbase = base;
-        if (log) console.log(cc(`black`, `constructor after ArgsParser, x: ${x}, base: ${base}, parsedInt: ${parsedInt}, Number(x): ${Number(x)}`));
+        if (log) console.log(util.cc(`black`, `constructor after ArgsParser, x: ${x}, base: ${base}, parsedInt: ${parsedInt}, Number(x): ${Number(x)}`));
         
         if (x === undefined) {
-            if (log) console.log(cc(`blue`, `x === undefined`));
+            if (log) console.log(util.cc(`blue`, `x === undefined`));
             
             if (typeofbase === 'number') { // all kwargs tests with x: undefined or FOO: 2 etc
-                if (log) console.log(cc('bright yellow', `x === undefined, typeofbase === 'number'. TypeError`));
+                if (log) console.log(util.cc('bright yellow', `x === undefined, typeofbase === 'number'. TypeError`));
                 throw new TypeError("int() missing string argument")
             }
             // int(), int({x: undefined, base: undefined})
             super(0);
-            if (log) console.log(cc('bright magenta', `x is undefined, super(0) return. this: ${this}`));
+            if (log) console.log(util.cc('bright magenta', `x is undefined, super(0) return. this: ${this}`));
             return
         } else if (x === false) {
             super(0);
-            if (log) console.log(cc('bright magenta', `x is false, super(0) return. this: ${this}`));
+            if (log) console.log(util.cc('bright magenta', `x is false, super(0) return. this: ${this}`));
             return
         }
         
         // Keep after undefined/false check
         if (typeofx !== 'number' && typeofx !== 'string') { // int(int), int(null), int([]), int(()=>{})
-            if (log) console.log(cc('bright yellow', 'typeof x isnt number or string, TypeError'));
+            if (log) console.log(util.cc('bright yellow', 'typeof x isnt number or string, TypeError'));
             throw new TypeError(`int() argument must be a string, a bytes-like object or a number, not '${typeofx}'`);
         }
         if (base === undefined) {
             base = 10;
             // Don't update parsedInt here; parseInt('0x11') === 17 (good), parseInt('0x11', 10) === 0 (bad).
-            if (log) console.log(cc('cyan', `base === undefined => base=10`));
+            if (log) console.log(util.cc('cyan', `base === undefined => base=10`));
         } else {
             // if (typeofbase !== 'number' || parseFloat(base) - parseInt(base) !== 0) {
             if (!util.isInteger(base)) {
-                if (log) console.log(cc('bright yellow', `!isInteger(base)', TypeError`));
+                if (log) console.log(util.cc('bright yellow', `!isInteger(base)', TypeError`));
                 throw new TypeError(`'${typeofbase}' object cannot be interpreted as an integer`);
             }
             
             if (base !== 0 && base < 2 || base > 36) {
-                if (log) console.log(cc('bright yellow', 'base out of range, ValueError'));
+                if (log) console.log(util.cc('bright yellow', 'base out of range, ValueError'));
                 throw new ValueError("int() base must be >= 2 and <= 36, or 0");
             }
             // base was passed explicitly
             if (typeofx === 'number') {
-                if (log) console.log(cc('bright yellow', 'x is number, TypeError'));
+                if (log) console.log(util.cc('bright yellow', 'x is number, TypeError'));
                 throw new TypeError(`int() can't convert non-string with explicit base`)
             }
         }
@@ -311,25 +316,25 @@ class Int extends Number {
             // **  Trim
             x = x.trim(); // " + 314 " => "+ 314"
             nosign = x;
-            if (log && orig !== x) console.log(cc('cyan', `after x.trim(): '${x}'`));
+            if (log && orig !== x) console.log(util.cc('cyan', `after x.trim(): '${x}'`));
             if (x[0] === '-' || x[0] === '+') {
                 sign = x[0] === '-' ? -1 : 1;
                 nosign = x.slice(1);
-                if (log) console.log(cc('cyan', `x[0] is '${x[0]}', sign is: ${sign}', nosign is: '${nosign}'`));
+                if (log) console.log(util.cc('cyan', `x[0] is '${x[0]}', sign is: ${sign}', nosign is: '${nosign}'`));
             }
             // Don't update parsedInt here; parseInt('0x11') === 17 (good), parseInt('0x11', 10) === 0 (bad).
             
             // **  Underscore
             if (x.includes('_')) {
-                if (log) console.log(cc('blue', "x.includes('_')"));
+                if (log) console.log(util.cc('blue', "x.includes('_')"));
                 if (x.startsWith('_') || nosign.startsWith('_') || x.includes('__') || x.endsWith('_')) {
-                    if (log) console.log(cc('bright yellow', `Leading / trailing / multiple underscore, ValueError`));
+                    if (log) console.log(util.cc('bright yellow', `Leading / trailing / multiple underscore, ValueError`));
                     throw new ValueError(`invalid literal for int() with base ${base}: '${x}'`);
                 }
                 x = x.split('_').join('');
                 // don't update or set nosign here
                 parsedInt = parseInt(x, base);
-                if (log) console.log(cc('cyan', `No leading / trailing / multiple underscore => x = '${x}', parsedInt = ${parsedInt}`));
+                if (log) console.log(util.cc('cyan', `No leading / trailing / multiple underscore => x = '${x}', parsedInt = ${parsedInt}`));
             }
         }
         
@@ -344,7 +349,7 @@ class Int extends Number {
         
         // **  isSpecial
         if (nosign[0] === '0' && nosign[1] && RegExp(/[box]/, 'i').test(nosign[1])) {
-            if (log) console.log(cc('cyan', `nosign[0] === '0', nosign[1] is [boxBOX] => prefix = nosign[1] = '${nosign[1]}'`));
+            if (log) console.log(util.cc('cyan', `nosign[0] === '0', nosign[1] is [boxBOX] => prefix = nosign[1] = '${nosign[1]}'`));
             prefix = nosign[1];
             isBinary = prefix === 'b' || prefix === 'B';
             isOctal = prefix === 'o' || prefix === 'O';
@@ -358,18 +363,18 @@ class Int extends Number {
             } else {
                 isFloat = parseFloat(x) - parseInt(x) !== 0;
             }
-            if (log) console.log(cc('cyan', `!isSpecial => isFloat = ${isFloat}`));
+            if (log) console.log(util.cc('cyan', `!isSpecial => isFloat = ${isFloat}`));
         }
         
         // **  Update base 0 to matching special base
         if (base === 0) { // int(000, 0)
-            if (log) console.log(cc('blue', `base === 0`));
+            if (log) console.log(util.cc('blue', `base === 0`));
             // CPython Objects\longobject.c.PyLong_FromString (lineno 2144)
             if (nosign[0] !== '0') { // int('711', 0), int('11', 0)
-                if (log) console.log(cc('cyan', `nosign[0] !== '0' => base = 10`));
+                if (log) console.log(util.cc('cyan', `nosign[0] !== '0' => base = 10`));
                 base = 10;
             } else if (isSpecial) {
-                if (log) console.log(cc('blue', `nosign[0] === '0' && isSpecial`));
+                if (log) console.log(util.cc('blue', `nosign[0] === '0' && isSpecial`));
                 if (isHexaDecimal)  // int('0x123', 0), int('0x', 0) ValueError, int('0xffff_ffff', 0)
                     base = 16;
                 else if (isOctal)  // int('0o123', 0), int('0o', 0) ValueError, int('0o5_7_7', 0)
@@ -377,9 +382,9 @@ class Int extends Number {
                 else if (isBinary)  // int('0b', 0) ValueError, int('0b100', 0), int('0b_0', 0)
                     base = 2;
                 
-                if (log) console.log(cc('cyan', `${isBinary ? 'isBinary' : isOctal ? 'isOctal' : isHexaDecimal ? 'isHexaDecimal' : ''} => base = ${base}`));
+                if (log) console.log(util.cc('cyan', `${isBinary ? 'isBinary' : isOctal ? 'isOctal' : isHexaDecimal ? 'isHexaDecimal' : ''} => base = ${base}`));
             } else { // int('000', 0), int('0_0_0', 0), int('-01', 0), int('0c11', 0), int('1b11', 0), int('07', 0), int('0_7', 0), int('0 if 1_Else 1', 0), int('0_b0', 0), int('0_xa', 0),
-                if (log) console.log(cc('blue', `base === 0 but !isSpecial`));
+                if (log) console.log(util.cc('blue', `base === 0 but !isSpecial`));
             }
             // updating parsedInt here never changes anything, so don't
         }
@@ -402,7 +407,7 @@ class Int extends Number {
                 parsedInt = parseInt(x * sign, base);
             }
             nosign = x;
-            if (log) console.log(cc('cyan', `isSpecial && base === specialBase => x = '${x}', nosign = '${nosign}', parsedInt = ${parsedInt}`));
+            if (log) console.log(util.cc('cyan', `isSpecial && base === specialBase => x = '${x}', nosign = '${nosign}', parsedInt = ${parsedInt}`));
             
         }
         
@@ -411,7 +416,7 @@ class Int extends Number {
         if (typeofx === 'string') {
             x = x as string;
             if (log) {
-                console.log(cc('blue', "typeofx === 'string'"));
+                console.log(util.cc('blue', "typeofx === 'string'"));
                 console.table({
                     'nosign[0]': nosign[0],
                     prefix,
@@ -435,12 +440,12 @@ class Int extends Number {
             
             if (isFloat) { // int('1.5'), int('15.0')
                 
-                if (log) console.log(cc('bright yellow', 'isFloat, ValueError'));
+                if (log) console.log(util.cc('bright yellow', 'isFloat, ValueError'));
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`);
             }
             
             if (isSpecial && origbase === undefined) {
-                if (log) console.log(cc(`bright yellow`, `isSpecial && origbase === undefined, ValueError`));
+                if (log) console.log(util.cc(`bright yellow`, `isSpecial && origbase === undefined, ValueError`));
                 throw new ValueError(`invalid literal for int() with base ${base}: '${orig}'`)
             }
             
@@ -450,24 +455,24 @@ class Int extends Number {
                 let convertedC;
                 if (RegExp(/[a-zA-Z ]/).test(c)) {
                     convertedC = parseInt(c, 36);
-                    if (log) console.log(cc('cyan', `in for loop, converted '${c}' to: ${convertedC}`));
+                    if (log) console.log(util.cc('cyan', `in for loop, converted '${c}' to: ${convertedC}`));
                 } else {
                     convertedC = c;
                 }
                 if (isNaN(convertedC) || (convertedC >= base && c !== '0')) { // int("07", 0), int("0c11"), int("0c11", 0), int("0c12", 2),
-                    if (log) console.log(cc('bright yellow', `Either ${convertedC} isNaN or is >= base ${base}, ValueError`));
+                    if (log) console.log(util.cc('bright yellow', `Either ${convertedC} isNaN or is >= base ${base}, ValueError`));
                     throw new ValueError(`invalid literal for int() with base ${origbase === undefined ? base : origbase}: '${orig}'`);
                 }
             }
             if (Number.isInteger(parsedInt)) { // int('9ba461594', 12)
                 super(parsedInt);
-                if (log) console.log(cc('bright magenta', `Number.isInteger(parsedInt) => super(parsedInt = ${parsedInt}) and return. this: ${this}`));
+                if (log) console.log(util.cc('bright magenta', `Number.isInteger(parsedInt) => super(parsedInt = ${parsedInt}) and return. this: ${this}`));
                 return
             }
             
             if (!RegExp(/\d/).test(x) ||    // empty strings
                 x.includes(' ')) { // int("+ 314")
-                if (log) console.log(cc('bright yellow', `Either ${x} includes(' ') or no /\d/ in x, ValueError`));
+                if (log) console.log(util.cc('bright yellow', `Either ${x} includes(' ') or no /\d/ in x, ValueError`));
                 throw new ValueError(`invalid literal for int() with base ${origbase === undefined ? base : origbase}: '${orig}'`);
             }
             
@@ -479,20 +484,20 @@ class Int extends Number {
             
             if (x < 0) {
                 super(Math.ceil(x));
-                if (log) console.log(cc('bright magenta', `x < 0, super(Math.ceil(${x})) return. this: ${this}`));
+                if (log) console.log(util.cc('bright magenta', `x < 0, super(Math.ceil(${x})) return. this: ${this}`));
             } else {
                 super(Math.floor(x));
-                if (log) console.log(cc('bright magenta', `x >= 0, super(Math.floor(${x})) return. this: ${this}`));
+                if (log) console.log(util.cc('bright magenta', `x >= 0, super(Math.floor(${x})) return. this: ${this}`));
             }
             return
         }
         
         if (base !== 10) { // int("10", 16)
             super(parsedInt);
-            if (log) console.log(cc('bright magenta', `base !== 10, super(parsedInt = ${parsedInt}}) and return.`), {this: this});
+            if (log) console.log(util.cc('bright magenta', `base !== 10, super(parsedInt = ${parsedInt}}) and return.`), {this: this});
         } else { // int(314)
             super(x);
-            if (log) console.log(cc('bright magenta', `base === 10, super(${x}) and return.`), {this: this});
+            if (log) console.log(util.cc('bright magenta', `base === 10, super(${x}) and return.`), {this: this});
         }
         
     }
