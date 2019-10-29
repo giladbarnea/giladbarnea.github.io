@@ -77,13 +77,14 @@ a {
   font-family: monospace;
   font-size: 16px;
   line-height: 25px;
-  margin-left: 50%;
-  opacity: 0;
   padding: 30px 30px 60px 30px;
   position: absolute;
   top: 0;
-  transition: border 1s ease-out, background-color 0.5s ease-out, backdrop-filter 0.5s, color 0.25s ease-in-out 0.15s;
+  transition: border 1s ease-out, background-color 0.5s ease-out, backdrop-filter 0.5s, color 0.25s ease-in-out 0.15s, opacity 0.25s;
   z-index: -1;
+}
+#expando.collapsed {
+  opacity: 0;
 }
 #expando:not([hidden]) {
   backdrop-filter: blur(5px);
@@ -91,7 +92,6 @@ a {
   border: 1px solid rgba(255, 176, 46, 0.5);
   color: white;
   height: auto;
-  opacity: 1;
   z-index: 5;
 }
 

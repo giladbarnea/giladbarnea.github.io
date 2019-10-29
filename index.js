@@ -1,6 +1,111 @@
 const BodyElem = elem({ htmlElement: document.body });
+const DocumentElem = elem({ htmlElement: document.documentElement });
+DocumentElem
+    .click(() => {
+    if (!Expando.expanded)
+        return;
+    Expando.close();
+})
+    .keydown((event) => {
+    if (!Expando.expanded)
+        return;
+    if (event.key === "Escape") {
+        Expando.close();
+    }
+});
 const App = elem({ id: 'app' });
 const Expando = elem({ id: 'expando' });
+Expando.expanded = false;
+Expando.close = function () {
+    App.removeClass('unfocused');
+    this
+        .on({
+        transitionend: () => {
+            console.log('EXPANDO transitionend');
+            Expando.attr({ hidden: '' });
+        }
+    }, { once: true })
+        .addClass('collapsed');
+    this.expanded = false;
+};
+Expando.expand = async function (exp) {
+    const text = fromExpandableToText(exp);
+    const ms = 25;
+    const loops = 500 / ms;
+    let count = 0;
+    console.log('before while');
+    App.addClass('will-change-filter');
+    while (count < loops) {
+        if (!exp.pointerHovering) {
+            console.log('breaking');
+            App.removeClass('will-change-filter');
+            return;
+        }
+        await wait(ms);
+        count++;
+    }
+    this.expanded = true;
+    console.log('done while');
+    App
+        .on({
+        transitionend: () => {
+            console.log('APP transitionend');
+            App.removeClass('will-change-filter');
+        }
+    }, { once: true })
+        .addClass('unfocused');
+    const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
+    this
+        .removeAttr('hidden')
+        .removeClass('collapsed')
+        .css({
+        top: `${exp.e.offsetTop + parseInt(getComputedStyle(exp.e).lineHeight) + App.e.offsetTop}px`,
+        marginLeft: `${exp.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
+        width: `${exp.e.offsetWidth}px`
+    })
+        .text(text);
+};
+const expandables = Array.from(document.querySelectorAll('.expandable'))
+    .map(exp => elem({ htmlElement: exp }));
+function fromExpandableToText(exp) {
+    const cls = exp.class().filter(cls => cls !== 'expandable')[0];
+    switch (cls) {
+        case 'bingoal':
+            return `Lead developer at Bingoal, a second-screen, real-time, multiplayer gaming startup.
+            
+            I built everything from scratch. The product is being released these days. Development is managed by Tal Franji.
+	
+	Tech used: Python 2 and 3, Google Cloud Platform (AppEngine + Datasatore + Firebase), Typescript.`;
+        case 'pyano':
+            return `Part time developer at Pyano, a cross-platform app that teaches piano playing.
+            Requested by Dr. Ido Tavor’s lab for neuroscience at TAU.
+            
+            Pyano is used to create brain-plasticity prediction models.
+				
+		Tech used: Python 3, Django, Node.js (Electron.js, Piano.js), Bash.
+
+I've also built Dr. Tavor’s personal website.`;
+        default:
+            return '';
+    }
+}
+for (let exp of expandables) {
+    exp.pointerHovering = false;
+    exp.on({
+        pointerenter: (ev) => {
+            if (Expando.expanded) {
+                console.log('pointerenter, Expando.expanded => returning');
+                return;
+            }
+            exp.pointerHovering = true;
+            Expando.expand(exp);
+        },
+        pointerleave: (ev) => {
+            exp.pointerHovering = false;
+            console.log('pointerleave');
+        }
+    });
+}
 const resumePageLink = elem({ id: 'resume_page_link' });
 function buildResumePage() {
     App
@@ -26,60 +131,4 @@ function buildResumePage() {
                                     others I enjoy contributing to.`));
 }
 resumePageLink.click(buildResumePage);
-const expandables = Array.from(document.querySelectorAll('.expandable'))
-    .map(exp => elem({ htmlElement: exp }));
-async function expand(text) {
-    const ms = 25;
-    const loops = 500 / ms;
-    let count = 0;
-    console.log('before while', { this: this, offsetTop: this.e.offsetTop, offsetLeft: this.e.offsetLeft });
-    App.addClass('will-change-filter');
-    while (count < loops) {
-        if (!this.pointerHovering) {
-            console.log('breaking');
-            App.removeClass('will-change-filter');
-            return;
-        }
-        await wait(ms);
-        count++;
-    }
-    console.log('done while', { this: this, offsetTop: this.e.offsetTop, offsetLeft: this.e.offsetLeft });
-    App.addClass('unfocused');
-    Expando
-        .removeAttr('hidden')
-        .css({
-        top: `${this.e.offsetTop + parseInt(getComputedStyle(this.e).lineHeight) + App.e.offsetTop}px`,
-        transform: `translateX(${this.e.offsetLeft / -2}px)`,
-        width: `${this.e.offsetWidth}px`
-    })
-        .text(text);
-}
-function fromExpandableToText(exp) {
-    const cls = exp.class().filter(cls => cls !== 'expandable')[0];
-    switch (cls) {
-        case 'bingoal':
-            return `Lead developer at Bingoal, a second-screen, real-time, multiplayer gaming startup.
-            
-            I built everything from scratch. The product is being released these days. Development is managed by Tal Franji.
-	
-	Tech used: Python 2 and 3, Google Cloud Platform (AppEngine + Datasatore + Firebase), Typescript.`;
-        default:
-            return '';
-    }
-}
-for (let exp of expandables) {
-    exp.pointerHovering = false;
-    exp.expand = expand;
-    exp.on({
-        pointerenter: (ev) => {
-            exp.pointerHovering = true;
-            console.log('pointerenter');
-            exp.expand(fromExpandableToText(exp));
-        },
-        pointerleave: (ev) => {
-            exp.pointerHovering = false;
-            console.log('pointerleave');
-        }
-    });
-}
 //# sourceMappingURL=index.js.map
