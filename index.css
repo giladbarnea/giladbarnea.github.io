@@ -66,24 +66,32 @@ a {
   will-change: filter;
 }
 #app.unfocused {
-  filter: blur(2px) saturate(0.5);
+  filter: grayscale(0.8) brightness(0.35);
 }
 
 #expando {
-  background-color: rgba(0, 0, 0, 0);
-  border: 1px solid rgba(255, 255, 255, 0);
+  background-color: rgba(255, 255, 255, 0);
+  border: 1px solid rgba(255, 176, 46, 0);
+  color: rgba(0, 0, 0, 0);
   display: block;
-  height: 50vw;
+  font-family: monospace;
+  font-size: 16px;
+  line-height: 25px;
   margin-left: 50%;
+  opacity: 0;
+  padding: 30px 30px 60px 30px;
   position: absolute;
   top: 0;
-  transition: border 1s ease-in, background-color 0.5s ease-out, backdrop-filter 0.5s;
+  transition: border 1s ease-out, background-color 0.5s ease-out, backdrop-filter 0.5s, color 0.25s ease-in-out 0.15s;
   z-index: -1;
 }
 #expando:not([hidden]) {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px) saturate(0.5);
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 176, 46, 0.5);
+  color: white;
+  height: auto;
+  opacity: 1;
   z-index: 5;
 }
 
@@ -121,7 +129,7 @@ a {
 }
 
 .expandable {
-  color: #FFB02E;
+  color: #ffb02e;
 }
 
 /*# sourceMappingURL=index.css.map */

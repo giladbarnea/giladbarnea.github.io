@@ -28,7 +28,7 @@ function buildResumePage() {
 resumePageLink.click(buildResumePage);
 const expandables = Array.from(document.querySelectorAll('.expandable'))
     .map(exp => elem({ htmlElement: exp }));
-async function expand() {
+async function expand(text) {
     const ms = 25;
     const loops = 500 / ms;
     let count = 0;
@@ -44,13 +44,25 @@ async function expand() {
         count++;
     }
     console.log('done while', { this: this, offsetTop: this.e.offsetTop, offsetLeft: this.e.offsetLeft });
+    App.addClass('unfocused');
     Expando
         .removeAttr('hidden')
         .css({
         top: `${this.e.offsetTop + parseInt(getComputedStyle(this.e).lineHeight) + App.e.offsetTop}px`,
         transform: `translateX(${this.e.offsetLeft / -2}px)`,
-        width: `${this.e.offsetWidth + 20}px`
-    });
+        width: `${this.e.offsetWidth}px`
+    })
+        .text(text);
+}
+function fromExpandableToText(exp) {
+    const cls = exp.class().filter(cls => cls !== 'expandable')[0];
+    switch (cls) {
+        case 'bingoal':
+            return `Lead developer at Bingoal, a second-screen, real-time, multiplayer gaming startup. I built everything from scratch. The product is being released these days. Development is managed by Tal Franji.
+	Tech used: Python 2 and 3, Google Cloud Platform (AppEngine + Datasatore + Firebase), Typescript.`;
+        default:
+            return '';
+    }
 }
 for (let exp of expandables) {
     exp.pointerHovering = false;
@@ -59,7 +71,7 @@ for (let exp of expandables) {
         pointerenter: (ev) => {
             exp.pointerHovering = true;
             console.log('pointerenter');
-            exp.expand();
+            exp.expand(fromExpandableToText(exp));
         },
         pointerleave: (ev) => {
             exp.pointerHovering = false;
