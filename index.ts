@@ -64,10 +64,10 @@ async function expand() {
         count++;
     }
     console.log('done while', {this: this, offsetTop: this.e.offsetTop, offsetLeft: this.e.offsetLeft});
-    App.addClass('unfocused');
-    wait(500).then(() => {
-        console.log({this: this, offsetTop: this.e.offsetTop, offsetLeft: this.e.offsetLeft});
-    });
+    // App.addClass('unfocused');
+    // wait(500).then(() => {
+    //     console.log({this: this, offsetTop: this.e.offsetTop, offsetLeft: this.e.offsetLeft});
+    // });
     // TODO: remove will-change-filter after transitionend
     Expando
         .removeAttr('hidden')
@@ -76,6 +76,8 @@ async function expand() {
             transform: `translateX(${this.e.offsetLeft / -2}px)`,
             width: `${this.e.offsetWidth + 20}px`
         })
+    // await wait(500);
+    // Expando.css({backdropFilter: 'blur(5px) saturate(0.5)'})
 }
 
 for (let exp of expandables) {

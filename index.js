@@ -44,10 +44,6 @@ async function expand() {
         count++;
     }
     console.log('done while', { this: this, offsetTop: this.e.offsetTop, offsetLeft: this.e.offsetLeft });
-    App.addClass('unfocused');
-    wait(500).then(() => {
-        console.log({ this: this, offsetTop: this.e.offsetTop, offsetLeft: this.e.offsetLeft });
-    });
     Expando
         .removeAttr('hidden')
         .css({
