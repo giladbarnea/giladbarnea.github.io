@@ -20,7 +20,7 @@ h2 {
   margin-bottom: 60px;
 }
 
-h3 {
+.h3, h3 {
   font-size: 30px;
   line-height: 44px;
   margin-bottom: 40px;
@@ -33,11 +33,10 @@ h4 {
 }
 
 body {
-  background-color: #111;
   -webkit-font-smoothing: antialiased;
-  font-family: "Work Sans", sans-serif;
+  background-color: #111;
   color: white;
-  overflow-y: overlay;
+  font-family: "Work Sans", sans-serif;
 }
 
 main {
