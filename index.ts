@@ -31,13 +31,14 @@ const Expando = elem({id: 'expando'}) as IExpando;
 Expando.expanded = false;
 Expando.close = function () {
     App.removeClass('unfocused');
-    this.on({
-        transitionend: () => {
-            console.log('EXPANDO transitionend');
-            Expando.attr({hidden: ''})
-        }
-    }, {once: true});
-    this.addClass('collapsed');
+    this
+        .on({
+            transitionend: () => {
+                console.log('EXPANDO transitionend');
+                Expando.attr({hidden: ''})
+            }
+        }, {once: true})
+        .addClass('collapsed');
     this.expanded = false;
 };
 Expando.expand = async function (exp: IExpandable) {
@@ -58,20 +59,25 @@ Expando.expand = async function (exp: IExpandable) {
     }
     this.expanded = true;
     console.log('done while');
-    App.on({
-        transitionend: () => {
-            console.log('APP transitionend');
-            App.removeClass('will-change-filter');
-        }
-    }, {once: true});
-    App.addClass('unfocused');
+    App
+        .on({
+            transitionend: () => {
+                console.log('APP transitionend');
+                App.removeClass('will-change-filter');
+            }
+        }, {once: true})
+        .addClass('unfocused');
     
+    
+    // 30px
+    const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
     this
         .removeAttr('hidden')
         .removeClass('collapsed')
         .css({
             top: `${exp.e.offsetTop + parseInt(getComputedStyle(exp.e).lineHeight) + App.e.offsetTop}px`,
-            transform: `translateX(${exp.e.offsetLeft / -2}px)`,
+            // transform: `translateX(${exp.e.offsetLeft / -2}px)`,
+            marginLeft: `${exp.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
             width: `${exp.e.offsetWidth}px` // -40 because +20 looks good, and compensate for padding==30 TWICE
         })
         .text(text)
@@ -81,7 +87,6 @@ Expando.expand = async function (exp: IExpandable) {
 interface IExpandable extends BetterHTMLElement {
     pointerHovering: boolean;
     
-    expand(text: string): Promise<void>;
 }
 
 const expandables = Array.from(document.querySelectorAll('.expandable'))
@@ -113,7 +118,6 @@ I've also built Dr. Tavor’s personal website.`;
 
 for (let exp of expandables) {
     exp.pointerHovering = false;
-    // exp.expand = expand;
     
     
     exp.on({

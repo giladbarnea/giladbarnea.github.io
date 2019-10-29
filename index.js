@@ -18,13 +18,14 @@ const Expando = elem({ id: 'expando' });
 Expando.expanded = false;
 Expando.close = function () {
     App.removeClass('unfocused');
-    this.on({
+    this
+        .on({
         transitionend: () => {
             console.log('EXPANDO transitionend');
             Expando.attr({ hidden: '' });
         }
-    }, { once: true });
-    this.addClass('collapsed');
+    }, { once: true })
+        .addClass('collapsed');
     this.expanded = false;
 };
 Expando.expand = async function (exp) {
@@ -45,19 +46,21 @@ Expando.expand = async function (exp) {
     }
     this.expanded = true;
     console.log('done while');
-    App.on({
+    App
+        .on({
         transitionend: () => {
             console.log('APP transitionend');
             App.removeClass('will-change-filter');
         }
-    }, { once: true });
-    App.addClass('unfocused');
+    }, { once: true })
+        .addClass('unfocused');
+    const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
     this
         .removeAttr('hidden')
         .removeClass('collapsed')
         .css({
         top: `${exp.e.offsetTop + parseInt(getComputedStyle(exp.e).lineHeight) + App.e.offsetTop}px`,
-        transform: `translateX(${exp.e.offsetLeft / -2}px)`,
+        marginLeft: `${exp.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
         width: `${exp.e.offsetWidth}px`
     })
         .text(text);
