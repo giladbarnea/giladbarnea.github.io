@@ -1,12 +1,21 @@
-@charset "UTF-8";
+@font-face {
+  font-family: "WorkSans";
+  src: url("Work_Sans/WorkSans-Regular.ttf");
+}
+@font-face {
+  font-family: "WorkSansMedium";
+  src: url("Work_Sans/WorkSans-Medium.ttf");
+}
+@font-face {
+  font-family: "WorkSansSemiBold";
+  src: url("Work_Sans/WorkSans-SemiBold.ttf");
+}
 /*normalize*/
 h1, h2, h3, h4, h5, h6 {
-  font-size: 1em;
-  font-weight: normal;
   margin: 0;
+  font-weight: 300;
 }
 
-/* or ‘0 0 1em’ if you’re so inclined */
 h1 {
   font-size: 128px;
   line-height: 124px;
@@ -15,34 +24,66 @@ h1 {
 
 h2 {
   font-size: 58px;
+  font-family: WorkSansMedium;
   line-height: 64px;
-  letter-spacing: -2.5px;
+  letter-spacing: -2px;
   margin-bottom: 60px;
 }
 
-h3 {
+.h4, h4 {
   font-size: 30px;
   line-height: 44px;
   margin-bottom: 40px;
 }
 
-h4 {
+h5 {
   font-size: 22px;
   line-height: 30px;
   margin-bottom: 22px;
 }
 
 body {
-  background-color: #111;
   -webkit-font-smoothing: antialiased;
-  font-family: "Work Sans", sans-serif;
+  background-color: #111;
   color: white;
-  overflow-y: overlay;
+  font-family: WorkSans;
 }
 
-main {
+a {
+  color: cyan;
+}
+
+.app, #app {
   max-width: 984px;
   margin: 60px auto;
+}
+
+#app {
+  position: relative;
+  transition: filter 0.5s ease-in-out;
+}
+#app.will-change-filter {
+  will-change: filter;
+}
+#app.unfocused {
+  filter: blur(2px) saturate(0.5);
+}
+
+#expando {
+  display: flex;
+  height: 50vw;
+  margin-left: 50%;
+  position: absolute;
+  z-index: -1;
+  border: 1px solid rgba(255, 255, 255, 0);
+  background-color: rgba(0, 0, 0, 0);
+  transition: border 1s ease-in, background-color 0.5s ease-out, backdrop-filter 0.5s;
+}
+#expando:not([hidden]) {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px) saturate(0.5);
+  z-index: 5;
 }
 
 .mb-10 {
@@ -61,21 +102,25 @@ main {
   margin-left: 30px;
 }
 
-a {
-  color: cyan;
-}
-
 .clickable {
   cursor: pointer;
   text-decoration: underline;
 }
 
+.unclickable, #expando[hidden] {
+  pointer-events: none;
+}
+
 .cyan {
-  color: cyan;
+  color: #00ffff;
 }
 
 .fontsize-25 {
   font-size: 25px;
+}
+
+.expandable {
+  color: #FFB02E;
 }
 
 /*# sourceMappingURL=index.css.map */

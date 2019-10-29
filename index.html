@@ -3,31 +3,32 @@
 <head>
     <meta charset="utf-8">
     <title>Gilad Barnea</title>
-    <link href="https://fonts.googleapis.com/css?family=Work+Sans" rel="stylesheet">
-    <!--    <link href="https://fonts.googleapis.com/css?family=Work+Sans:500" rel="stylesheet">-->
+
     <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
     <!--    <meta http-equiv="refresh" content="0; URL=https://example.com/">
            <link rel="canonical" href="https://example.com/">-->
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
-<main id="main">
+<div id="app">
     <h2>Hi, I’m Gilad.</h2>
-    <h3 class="mb-60">
-        <div class="mb-30">I like creating tools that simplify things.</div>
+    <div class="h4 mb-60">
+        <p>I like creating tools that simplify things.</p>
 
-        <div class="mb-10">Most recently, I built a web game for a startup.
-                           We had people play against each other, and now the company is exiting.
-        </div>
+        <p>Most recently, I built a
+            <span class="expandable">multiplayer gaming platform</span>
+           for a startup.
+           You might have seen it on your favorite sports website.
+        </p>
 
-        <div class="mb-10">I also developed a piano-teaching app for a neuroscientist.
-                           Subjects used it, and we analyzed their brains. Eventually we discovered what happens cognitively when someone learns a skill.
-        </div>
-        <div>
+        <p>I also developed a piano-teaching app for a neuroscientist at TAU.
+           We analyzed the subject’s brains, and created prediction models for brain-plasticity.
+        </p>
+        <p>
             Earlier this year I freelanced to RealOneX, building their serverless infrastructure from ground-up.
-        </div>
-    </h3>
-    <h3 class="mb-60">
+        </p>
+    </div>
+    <div class="h4 mb-60">
         You can check out some of my side projects:
         <ul>
             <li>
@@ -46,19 +47,17 @@
                 And <a href="https://github.com/giladbarnea/betterhtmlelement">betterhtmlelement</a>, a high-performance replacement for jquery.
             </li>
         </ul>
-    </h3>
-    <h3>
+    </div>
+    <div class="h4">
         If you want to learn more about my background, you can view my
         <span id="resume_page_link" class="clickable cyan">resume page.</span>
+    </div>
+</div>
+<div id="expando" hidden>
 
-    </h3>
+</div>
 
-</main>
 
-<script type="text/javascript" src="consts.js" defer></script>
-<script type="text/javascript" src="util.js" defer></script>
-<script type="text/javascript" src="exceptions.js" defer></script>
-<script type="text/javascript" src="int.js" defer></script>
 <script type="text/javascript" src="betterhtmlelement.js" defer></script>
 <script type="text/javascript" src="index.js" defer></script>
 </body>
