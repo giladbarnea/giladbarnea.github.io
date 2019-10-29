@@ -28,14 +28,30 @@ const expandables = Array.from(document.querySelectorAll('.expandable'))
     .map(exp => elem({ htmlElement: exp }));
 for (let exp of expandables) {
     exp.pointerHovering = false;
+    exp.expand = async function () {
+        const ms = 25;
+        const loops = 500 / ms;
+        let count = 0;
+        console.log('before while');
+        while (count < loops) {
+            if (!exp.pointerHovering) {
+                console.log('breaking');
+                return;
+            }
+            await wait(ms);
+            count++;
+        }
+        console.log('done while');
+    };
     exp.on({
         pointerenter: (ev) => {
             exp.pointerHovering = true;
-            console.log('pointerenter', exp);
+            console.log('pointerenter');
+            exp.expand();
         },
         pointerleave: (ev) => {
             exp.pointerHovering = false;
-            console.log('pointerleave', exp);
+            console.log('pointerleave');
         }
     });
 }
