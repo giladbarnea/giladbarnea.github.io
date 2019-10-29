@@ -57,8 +57,17 @@ body
 	color: white
 	font:
 		family: WorkSans
+
+a
+	color: cyan
+
+.app
 	max-width: 984px
 	margin: 60px auto
+
+#app
+	@extend .app
+	position: relative
 	transition: filter 0.5s ease-in-out
 
 	&.will-change-filter
@@ -67,8 +76,24 @@ body
 	&.unfocused
 		filter: blur(2px) saturate(0.5)
 
-a
-	color: cyan
+
+#expando
+	display: flex
+	height: 50vw
+	margin-left: 50%
+	//transform: translateX(-50%)
+	position: absolute
+	//top: 0
+	//width: 600px
+	z-index: -1
+
+	&[hidden]
+		@extend .unclickable
+
+	&:not([hidden])
+		z-index: 5
+		overflow: scroll
+		box-shadow: 0px 5px 10px rgb(150, 150, 150)
 
 
 .mb-10
@@ -88,6 +113,9 @@ a
 	cursor: pointer
 	text-decoration: underline
 
+.unclickable
+	pointer-events: none
+
 .cyan
 	color: #00ffff
 
@@ -95,14 +123,14 @@ a
 	font-size: 25px
 
 .expandable
+	//color: #FFAA1C
+	//color: #FF9F00
+	//color: #FF7100
+	//color: #FF7400
+	//color: #FFAA00
+	//color: #FFB853
+	//color: #FA9836
+	//color: #EA6400
 	color: #FFB02E
-//color: #FFAA1C
-//color: #FF9F00
-//color: #FF7100
-//color: #FF7400
-//color: #FFAA00
-//color: #FFB853
-//color: #FA9836
-//color: #EA6400
 
 

@@ -1,7 +1,9 @@
 const BodyElem = elem({ htmlElement: document.body });
+const App = elem({ id: 'app' });
+const Expando = elem({ id: 'expando' });
 const resumePageLink = elem({ id: 'resume_page_link' });
 function buildResumePage() {
-    BodyElem
+    App
         .empty()
         .append(elem({ tag: 'h3' }).text('Resume'), elem({ tag: 'h5' }).html(`<span class="fontsize-25 indent-30">I started out</span> as a concert pianist since I was five. By high school I started composing movie soundtracks.<br>
                                     I joined the military band as a composer and producer, and after my release I studied Classical Composition and Orchestration
@@ -30,19 +32,29 @@ async function expand() {
     const ms = 25;
     const loops = 500 / ms;
     let count = 0;
-    console.log('before while');
-    BodyElem.addClass('will-change-filter');
+    console.log('before while', { this: this, offsetTop: this.e.offsetTop, offsetLeft: this.e.offsetLeft });
+    App.addClass('will-change-filter');
     while (count < loops) {
         if (!this.pointerHovering) {
             console.log('breaking');
-            BodyElem.removeClass('will-change-filter');
+            App.removeClass('will-change-filter');
             return;
         }
         await wait(ms);
         count++;
     }
-    console.log('done while');
-    BodyElem.addClass('unfocused');
+    console.log('done while', { this: this, offsetTop: this.e.offsetTop, offsetLeft: this.e.offsetLeft });
+    App.addClass('unfocused');
+    wait(500).then(() => {
+        console.log({ this: this, offsetTop: this.e.offsetTop, offsetLeft: this.e.offsetLeft });
+    });
+    Expando
+        .removeAttr('hidden')
+        .css({
+        top: `${this.e.offsetTop + parseInt(getComputedStyle(this.e).lineHeight) + App.e.offsetTop}px`,
+        transform: `translateX(${this.e.offsetLeft / -2}px)`,
+        width: `${this.e.offsetWidth + 20}px`
+    });
 }
 for (let exp of expandables) {
     exp.pointerHovering = false;
