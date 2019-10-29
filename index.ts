@@ -1,6 +1,138 @@
 const BodyElem = elem({htmlElement: document.body});
+const DocumentElem = elem({htmlElement: document.documentElement});
+DocumentElem
+    .click(() => {
+        if (!Expando.expanded)
+            return;
+        Expando.close();
+    })
+    .keydown((event: KeyboardEvent) => {
+        if (!Expando.expanded)
+            return;
+        
+        if (event.key === "Escape") {
+            Expando.close();
+        }
+        
+        
+    });
 const App = elem({id: 'app'});
-const Expando = elem({id: 'expando'});
+
+// ***  Expando
+interface IExpando extends Div {
+    expanded: boolean;
+    
+    expand(exp: IExpandable): Promise<void>;
+    
+    close(): void;
+}
+
+const Expando = elem({id: 'expando'}) as IExpando;
+Expando.expanded = false;
+Expando.close = function () {
+    App.removeClass('unfocused');
+    this.on({
+        transitionend: () => {
+            console.log('EXPANDO transitionend');
+            Expando.attr({hidden: ''})
+        }
+    }, {once: true});
+    this.addClass('collapsed');
+    this.expanded = false;
+};
+Expando.expand = async function (exp: IExpandable) {
+    const text = fromExpandableToText(exp);
+    const ms = 25;
+    const loops = 500 / ms;
+    let count = 0;
+    console.log('before while');
+    App.addClass('will-change-filter');
+    while (count < loops) {
+        if (!exp.pointerHovering) {
+            console.log('breaking');
+            App.removeClass('will-change-filter');
+            return;
+        }
+        await wait(ms);
+        count++;
+    }
+    this.expanded = true;
+    console.log('done while');
+    App.on({
+        transitionend: () => {
+            console.log('APP transitionend');
+            App.removeClass('will-change-filter');
+        }
+    }, {once: true});
+    App.addClass('unfocused');
+    
+    this
+        .removeAttr('hidden')
+        .removeClass('collapsed')
+        .css({
+            top: `${exp.e.offsetTop + parseInt(getComputedStyle(exp.e).lineHeight) + App.e.offsetTop}px`,
+            transform: `translateX(${exp.e.offsetLeft / -2}px)`,
+            width: `${exp.e.offsetWidth}px` // -40 because +20 looks good, and compensate for padding==30 TWICE
+        })
+        .text(text)
+};
+
+// ***  expandables
+interface IExpandable extends BetterHTMLElement {
+    pointerHovering: boolean;
+    
+    expand(text: string): Promise<void>;
+}
+
+const expandables = Array.from(document.querySelectorAll('.expandable'))
+    .map(exp => elem({htmlElement: exp as HTMLElement}) as IExpandable);
+
+
+function fromExpandableToText(exp: BetterHTMLElement): string {
+    const cls = exp.class().filter(cls => cls !== 'expandable')[0]; // assume eg "expandable bingoal"
+    switch (cls) {
+        case 'bingoal':
+            return `Lead developer at Bingoal, a second-screen, real-time, multiplayer gaming startup.
+            
+            I built everything from scratch. The product is being released these days. Development is managed by Tal Franji.
+	
+	Tech used: Python 2 and 3, Google Cloud Platform (AppEngine + Datasatore + Firebase), Typescript.`;
+        case 'pyano':
+            return `Part time developer at Pyano, a cross-platform app that teaches piano playing.
+            Requested by Dr. Ido Tavor’s lab for neuroscience at TAU.
+            
+            Pyano is used to create brain-plasticity prediction models.
+				
+		Tech used: Python 3, Django, Node.js (Electron.js, Piano.js), Bash.
+
+I've also built Dr. Tavor’s personal website.`;
+        default:
+            return ''
+    }
+}
+
+for (let exp of expandables) {
+    exp.pointerHovering = false;
+    // exp.expand = expand;
+    
+    
+    exp.on({
+        pointerenter: (ev: PointerEvent) => {
+            if (Expando.expanded) {
+                console.log('pointerenter, Expando.expanded => returning');
+                return;
+            }
+            exp.pointerHovering = true;
+            Expando.expand(exp);
+            
+        },
+        pointerleave: (ev: PointerEvent) => {
+            exp.pointerHovering = false;
+            console.log('pointerleave');
+            
+        }
+    })
+}
 const resumePageLink = elem({id: 'resume_page_link'});
 
 function buildResumePage() {
@@ -38,76 +170,3 @@ function buildResumePage() {
 }
 
 resumePageLink.click(buildResumePage);
-
-interface IExpandable extends BetterHTMLElement {
-    pointerHovering: boolean;
-    
-    expand(text: string): Promise<void>;
-}
-
-const expandables = Array.from(document.querySelectorAll('.expandable'))
-    .map(exp => elem({htmlElement: exp as HTMLElement}) as IExpandable);
-
-async function expand(text: string) {
-    const ms = 25;
-    const loops = 500 / ms;
-    let count = 0;
-    console.log('before while', {this: this, offsetTop: this.e.offsetTop, offsetLeft: this.e.offsetLeft});
-    App.addClass('will-change-filter');
-    while (count < loops) {
-        if (!this.pointerHovering) {
-            console.log('breaking');
-            App.removeClass('will-change-filter');
-            return;
-        }
-        await wait(ms);
-        count++;
-    }
-    console.log('done while', {this: this, offsetTop: this.e.offsetTop, offsetLeft: this.e.offsetLeft});
-    App.addClass('unfocused');
-    
-    // TODO: remove will-change-filter after transitionend
-    Expando
-        .removeAttr('hidden')
-        .css({
-            top: `${this.e.offsetTop + parseInt(getComputedStyle(this.e).lineHeight) + App.e.offsetTop}px`,
-            transform: `translateX(${this.e.offsetLeft / -2}px)`,
-            width: `${this.e.offsetWidth}px` // -40 because +20 looks good, and compensate for padding==30 TWICE
-        })
-        .text(text)
-    
-}
-
-function fromExpandableToText(exp: BetterHTMLElement): string {
-    const cls = exp.class().filter(cls => cls !== 'expandable')[0]; // assume eg "expandable bingoal"
-    switch (cls) {
-        case 'bingoal':
-            return `Lead developer at Bingoal, a second-screen, real-time, multiplayer gaming startup.
-            
-            I built everything from scratch. The product is being released these days. Development is managed by Tal Franji.
-	
-	Tech used: Python 2 and 3, Google Cloud Platform (AppEngine + Datasatore + Firebase), Typescript.`;
-        default:
-            return ''
-    }
-}
-
-for (let exp of expandables) {
-    exp.pointerHovering = false;
-    exp.expand = expand;
-    
-    
-    exp.on({
-        pointerenter: (ev: PointerEvent) => {
-            exp.pointerHovering = true;
-            console.log('pointerenter');
-            exp.expand(fromExpandableToText(exp));
-            
-        },
-        pointerleave: (ev: PointerEvent) => {
-            exp.pointerHovering = false;
-            console.log('pointerleave');
-            
-        }
-    })
-}
