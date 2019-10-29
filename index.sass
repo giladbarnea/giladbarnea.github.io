@@ -59,6 +59,13 @@ body
 		family: WorkSans
 	max-width: 984px
 	margin: 60px auto
+	transition: filter 0.5s ease-in-out
+
+	&.will-change-filter
+		will-change: filter
+
+	&.unfocused
+		filter: blur(2px) saturate(0.5)
 
 a
 	color: cyan
@@ -89,13 +96,13 @@ a
 
 .expandable
 	color: #FFB02E
-	//color: #FFAA1C
-	//color: #FF9F00
-	//color: #FF7100
-	//color: #FF7400
-	//color: #FFAA00
-	//color: #FFB853
-	//color: #FA9836
-	//color: #EA6400
+//color: #FFAA1C
+//color: #FF9F00
+//color: #FF7100
+//color: #FF7400
+//color: #FFAA00
+//color: #FFB853
+//color: #FA9836
+//color: #EA6400
 
 

@@ -49,6 +49,13 @@ body {
   font-family: WorkSans;
   max-width: 984px;
   margin: 60px auto;
+  transition: filter 0.5s ease-in-out;
+}
+body.will-change-filter {
+  will-change: filter;
+}
+body.unfocused {
+  filter: blur(2px) saturate(0.5);
 }
 
 a {

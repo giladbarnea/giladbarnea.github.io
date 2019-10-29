@@ -45,23 +45,31 @@ interface IExpandable extends BetterHTMLElement {
 
 const expandables = Array.from(document.querySelectorAll('.expandable'))
     .map(exp => elem({htmlElement: exp as HTMLElement}) as IExpandable);
+
+async function expand() {
+    const ms = 25;
+    const loops = 500 / ms;
+    let count = 0;
+    console.log('before while');
+    BodyElem.addClass('will-change-filter');
+    while (count < loops) {
+        if (!this.pointerHovering) {
+            console.log('breaking');
+            BodyElem.removeClass('will-change-filter');
+            return;
+        }
+        await wait(ms);
+        count++;
+    }
+    console.log('done while');
+    BodyElem.addClass('unfocused');
+}
+
 for (let exp of expandables) {
     exp.pointerHovering = false;
-    exp.expand = async function () {
-        const ms = 25;
-        const loops = 500 / ms;
-        let count = 0;
-        console.log('before while');
-        while (count < loops) {
-            if (!exp.pointerHovering) {
-                console.log('breaking');
-                return;
-            }
-            await wait(ms);
-            count++;
-        }
-        console.log('done while');
-    };
+    exp.expand = expand;
+    
+    
     exp.on({
         pointerenter: (ev: PointerEvent) => {
             exp.pointerHovering = true;
