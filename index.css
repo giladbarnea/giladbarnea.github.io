@@ -6,10 +6,14 @@
   font-family: "WorkSansMedium";
   src: url("Work_Sans/WorkSans-Medium.ttf");
 }
+@font-face {
+  font-family: "WorkSansSemiBold";
+  src: url("Work_Sans/WorkSans-SemiBold.ttf");
+}
 /*normalize*/
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
-  font-weight: normal;
+  font-weight: 300;
 }
 
 h1 {
@@ -22,7 +26,7 @@ h2 {
   font-size: 58px;
   font-family: WorkSansMedium;
   line-height: 64px;
-  letter-spacing: -2.5px;
+  letter-spacing: -2px;
   margin-bottom: 60px;
 }
 
@@ -73,11 +77,15 @@ a {
 }
 
 .cyan {
-  color: cyan;
+  color: #00ffff;
 }
 
 .fontsize-25 {
   font-size: 25px;
+}
+
+.expandable {
+  color: #FFB02E;
 }
 
 /*# sourceMappingURL=index.css.map */

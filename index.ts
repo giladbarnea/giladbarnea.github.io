@@ -36,3 +36,25 @@ function buildResumePage() {
 }
 
 resumePageLink.click(buildResumePage);
+
+interface IExpandable extends BetterHTMLElement {
+    pointerHovering: boolean;
+}
+
+const expandables = Array.from(document.querySelectorAll('.expandable'))
+    .map(exp => elem({htmlElement: exp as HTMLElement}) as IExpandable);
+for (let exp of expandables) {
+    exp.pointerHovering = false;
+    exp.on({
+        pointerenter: (ev: PointerEvent) => {
+            exp.pointerHovering = true;
+            console.log('pointerenter', exp);
+            
+        },
+        pointerleave: (ev: PointerEvent) => {
+            exp.pointerHovering = false;
+            console.log('pointerleave', exp);
+            
+        }
+    })
+}
