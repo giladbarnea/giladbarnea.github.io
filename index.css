@@ -70,14 +70,15 @@ a {
 }
 
 #expando {
-  display: flex;
+  background-color: rgba(0, 0, 0, 0);
+  border: 1px solid rgba(255, 255, 255, 0);
+  display: block;
   height: 50vw;
   margin-left: 50%;
   position: absolute;
-  z-index: -1;
-  border: 1px solid rgba(255, 255, 255, 0);
-  background-color: rgba(0, 0, 0, 0);
+  top: 0;
   transition: border 1s ease-in, background-color 0.5s ease-out, backdrop-filter 0.5s;
+  z-index: -1;
 }
 #expando:not([hidden]) {
   border: 1px solid rgba(255, 255, 255, 0.2);
