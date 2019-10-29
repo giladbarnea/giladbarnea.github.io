@@ -42,13 +42,13 @@ resumePageLink.click(buildResumePage);
 interface IExpandable extends BetterHTMLElement {
     pointerHovering: boolean;
     
-    expand(): Promise<void>;
+    expand(text: string): Promise<void>;
 }
 
 const expandables = Array.from(document.querySelectorAll('.expandable'))
     .map(exp => elem({htmlElement: exp as HTMLElement}) as IExpandable);
 
-async function expand() {
+async function expand(text: string) {
     const ms = 25;
     const loops = 500 / ms;
     let count = 0;
@@ -64,20 +64,32 @@ async function expand() {
         count++;
     }
     console.log('done while', {this: this, offsetTop: this.e.offsetTop, offsetLeft: this.e.offsetLeft});
-    // App.addClass('unfocused');
-    // wait(500).then(() => {
-    //     console.log({this: this, offsetTop: this.e.offsetTop, offsetLeft: this.e.offsetLeft});
-    // });
+    App.addClass('unfocused');
+    
     // TODO: remove will-change-filter after transitionend
     Expando
         .removeAttr('hidden')
         .css({
             top: `${this.e.offsetTop + parseInt(getComputedStyle(this.e).lineHeight) + App.e.offsetTop}px`,
             transform: `translateX(${this.e.offsetLeft / -2}px)`,
-            width: `${this.e.offsetWidth + 20}px`
+            width: `${this.e.offsetWidth}px` // -40 because +20 looks good, and compensate for padding==30 TWICE
         })
-    // await wait(500);
-    // Expando.css({backdropFilter: 'blur(5px) saturate(0.5)'})
+        .text(text)
+    
+}
+
+function fromExpandableToText(exp: BetterHTMLElement): string {
+    const cls = exp.class().filter(cls => cls !== 'expandable')[0]; // assume eg "expandable bingoal"
+    switch (cls) {
+        case 'bingoal':
+            return `Lead developer at Bingoal, a second-screen, real-time, multiplayer gaming startup.
+            
+            I built everything from scratch. The product is being released these days. Development is managed by Tal Franji.
+	
+	Tech used: Python 2 and 3, Google Cloud Platform (AppEngine + Datasatore + Firebase), Typescript.`;
+        default:
+            return ''
+    }
 }
 
 for (let exp of expandables) {
@@ -89,7 +101,7 @@ for (let exp of expandables) {
         pointerenter: (ev: PointerEvent) => {
             exp.pointerHovering = true;
             console.log('pointerenter');
-            exp.expand();
+            exp.expand(fromExpandableToText(exp));
             
         },
         pointerleave: (ev: PointerEvent) => {
