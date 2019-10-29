@@ -82,8 +82,11 @@ function fromExpandableToText(exp: BetterHTMLElement): string {
     const cls = exp.class().filter(cls => cls !== 'expandable')[0]; // assume eg "expandable bingoal"
     switch (cls) {
         case 'bingoal':
-            return `Lead developer at Bingoal, a second-screen, real-time, multiplayer gaming startup. I built everything from scratch. The product is being released these days. Development is managed by Tal Franji.
-	Tech used: Python 2 and 3, Google Cloud Platform (AppEngine + Datasatore + Firebase), Typescript.`
+            return `Lead developer at Bingoal, a second-screen, real-time, multiplayer gaming startup.
+            
+            I built everything from scratch. The product is being released these days. Development is managed by Tal Franji.
+	
+	Tech used: Python 2 and 3, Google Cloud Platform (AppEngine + Datasatore + Firebase), Typescript.`;
         default:
             return ''
     }
