@@ -37,9 +37,6 @@ body {
   background-color: #111;
   color: white;
   font-family: "Work Sans", sans-serif;
-}
-
-main {
   max-width: 984px;
   margin: 60px auto;
 }

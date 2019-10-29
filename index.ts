@@ -1,9 +1,8 @@
-const body = elem({htmlElement: document.body});
-const main = elem({id: 'main'});
+const BodyElem = elem({htmlElement: document.body});
 const resumePageLink = elem({id: 'resume_page_link'});
 
 function buildResumePage() {
-    main
+    BodyElem
         .empty()
         .append(
             elem({tag: 'h2'}).text('Resume'),
