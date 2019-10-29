@@ -30,8 +30,8 @@ Expando.close = function () {
 };
 Expando.expand = async function (exp) {
     const text = fromExpandableToText(exp);
-    const ms = 25;
-    const loops = 500 / ms;
+    const ms = 20;
+    const loops = 400 / ms;
     let count = 0;
     console.log('before while');
     App.addClass('will-change-filter');
@@ -63,7 +63,7 @@ Expando.expand = async function (exp) {
         marginLeft: `${exp.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
         width: `${exp.e.offsetWidth}px`
     })
-        .text(text);
+        .html(text);
 };
 const expandables = Array.from(document.querySelectorAll('.expandable'))
     .map(exp => elem({ htmlElement: exp }));
@@ -71,20 +71,19 @@ function fromExpandableToText(exp) {
     const cls = exp.class().filter(cls => cls !== 'expandable')[0];
     switch (cls) {
         case 'bingoal':
-            return `Lead developer at Bingoal, a second-screen, real-time, multiplayer gaming startup.
-            
-            I built everything from scratch. The product is being released these days. Development is managed by Tal Franji.
-	
-	Tech used: Python 2 and 3, Google Cloud Platform (AppEngine + Datasatore + Firebase), Typescript.`;
+            return `I’m the lead developer of <span class="italic">Bingoal</span>, a second-screen, real-time, multiplayer gaming startup.
+            <p>I built everything from scratch. The product is being released these days. Development is managed by Tal Franji.</p>
+	<p><span class="bold">Tech used</span>: Python 2 and 3, Google Cloud Platform (AppEngine + Datasatore + Firebase), Typescript.</p>`;
         case 'pyano':
-            return `Part time developer at Pyano, a cross-platform app that teaches piano playing.
-            Requested by Dr. Ido Tavor’s lab for neuroscience at TAU.
-            
-            Pyano is used to create brain-plasticity prediction models.
-				
-		Tech used: Python 3, Django, Node.js (Electron.js, Piano.js), Bash.
-
-I've also built Dr. Tavor’s personal website.`;
+            return `<span class="italic">Pyano</span> is a cross-platform app that teaches piano playing.
+            <p>Requested by Dr. Ido Tavor’s lab for neuroscience at TAU.</p>
+            <p>Pyano is used to create brain-plasticity prediction models.</p>
+		<p><span class="bold">Tech used</span>: Python 3, Django, Node.js (Electron.js, Piano.js), Bash.</p>
+<p>I’ve also built Dr. Tavor’s personal website.</p>`;
+        case 'rox':
+            return `"RealOneX" is an online real estate exchange platform.
+<p>I built their serverless infrastructure (Mar-May 19).</p>
+<p><span class="bold">Tech used</span>: Python 3, Docker, AWS (Lambda + S3 + Elastic Beanstalk), Google Photos / Places APIs.</p>`;
         default:
             return '';
     }

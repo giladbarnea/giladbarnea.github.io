@@ -6,7 +6,7 @@
 	font-family: "WorkSansMedium"
 	src: url("Work_Sans/WorkSans-Medium.ttf")
 
-@font-face
+//@font-face
 	font-family: "WorkSansSemiBold"
 	src: url("Work_Sans/WorkSans-SemiBold.ttf")
 
@@ -88,9 +88,8 @@ a
 		family: monospace
 		size: 16px
 	line-height: 25px
-	//margin-left: 50%
-	//opacity: 0
-	padding: 30px 30px 60px 30px
+	min-width: 340px
+	padding: 30px
 	position: absolute
 	top: 0
 	transition: border 1s ease-out, background-color 0.5s ease-out, backdrop-filter 0.5s, color 0.25s ease-in-out 0.15s, opacity 0.25s
@@ -112,6 +111,8 @@ a
 		//opacity: 1
 		z-index: 5
 
+	& > p
+		margin-block-start: 24px
 
 .mb-10
 	margin-bottom: 10px
@@ -149,5 +150,11 @@ a
 	//color: #FA9836
 	//color: #EA6400
 	color: rgb(255, 176, 46)
+	text-decoration: underline
 
 
+.bold
+	font-weight: 600
+
+.italic
+	font-style: italic
