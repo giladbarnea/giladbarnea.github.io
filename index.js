@@ -1,6 +1,5 @@
 const BodyElem = elem({ htmlElement: document.body });
-const DocumentElem = elem({ htmlElement: document.documentElement });
-DocumentElem
+const DocumentElem = elem({ htmlElement: document.documentElement })
     .click(() => {
     if (!Expando.expanded)
         return;
@@ -17,6 +16,7 @@ DocumentElem
 const App = elem({ id: 'app' });
 const Expando = elem({ id: 'expando' });
 Expando.expanded = false;
+Expando.pointerHovering = false;
 Expando
     .on({
     click: (ev) => {
@@ -24,16 +24,23 @@ Expando
         ev.stopImmediatePropagation();
     },
     pointerenter: (ev) => {
-        console.log('Expando pointerenter');
+        console.log(...bold('Expando pointerenter (XPE)'));
+        Expando.pointerHovering = true;
+        if (Expando.expanded === false) {
+            console.error('XPE | Expando pointerenter but was NOT expanded');
+        }
+        else {
+        }
     },
     pointerleave: (ev) => {
-        console.log('Expando pointerleave');
+        console.log(...bold('Expando pointerleave (XPL)'));
+        Expando.pointerHovering = false;
     }
 });
 Expando.close = function () {
     App.removeClass('unfocused');
     this
-        .addClass('collapsed')
+        .replaceClass('expanded', 'collapsed')
         .on({
         transitionend: () => {
             console.log('Expando transitionend');
@@ -47,17 +54,17 @@ Expando.expand = async function (expandable) {
     const text = fromExpandableToText(expandable);
     this.expanded = true;
     App
+        .addClass('unfocused')
         .on({
         transitionend: () => {
-            console.log('App transitionend');
+            console.log('App transitionend (filter)');
         }
-    }, { once: true })
-        .addClass('unfocused');
+    }, { once: true });
     const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
     const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
     this
         .removeAttr('hidden')
-        .removeClass('collapsed')
+        .replaceClass('collapsed', 'expanded')
         .css({
         top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
         marginLeft: `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
@@ -66,9 +73,9 @@ Expando.expand = async function (expandable) {
         .html(text);
 };
 const expandables = Array.from(document.querySelectorAll('.expandable'))
-    .map(exp => elem({ htmlElement: exp }));
-function fromExpandableToText(exp) {
-    const cls = exp.class().filter(cls => cls !== 'expandable')[0];
+    .map(expandable => elem({ htmlElement: expandable }));
+function fromExpandableToText(expandable) {
+    const cls = expandable.class().filter(cls => cls !== 'expandable')[0];
     switch (cls) {
         case 'bingoal':
             return `I’m the lead developer of <span class="italic">Bingoal</span>, a second-screen, real-time, multiplayer gaming startup.
@@ -92,15 +99,30 @@ for (let expandable of expandables) {
     expandable.pointerHovering = false;
     expandable.on({
         pointerenter: (ev) => {
+            console.log(...bold('expandable pointerenter (EPE)'));
             if (Expando.expanded) {
-                console.log('expandable pointerenter, Expando.expanded => returning');
-                return;
+                console.log('EPE | Expando.expanded => returning');
             }
-            expandable.pointerHovering = true;
-            Expando.expand(expandable);
+            else {
+                expandable.pointerHovering = true;
+                Expando.expand(expandable);
+            }
+            console.log('EPE | ', {
+                'expandable.pointerHovering': expandable.pointerHovering,
+                Expando: {
+                    expanded: Expando.expanded,
+                    pointerHovering: Expando.pointerHovering
+                }
+            });
         },
         pointerleave: (ev) => {
-            console.log('expandable pointerleave');
+            console.log(...bold('expandable pointerleave (EPL)'), {
+                'expandable.pointerHovering': expandable.pointerHovering,
+                Expando: {
+                    expanded: Expando.expanded,
+                    pointerHovering: Expando.pointerHovering
+                }
+            });
             expandable.pointerHovering = false;
         }
     });

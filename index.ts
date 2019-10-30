@@ -1,6 +1,5 @@
 const BodyElem = elem({htmlElement: document.body});
-const DocumentElem = elem({htmlElement: document.documentElement});
-DocumentElem
+const DocumentElem = elem({htmlElement: document.documentElement})
     .click(() => {
         if (!Expando.expanded)
             return;
@@ -22,6 +21,7 @@ const App = elem({id: 'app'});
 // ***  Expando
 interface IExpando extends Div {
     expanded: boolean;
+    pointerHovering: boolean;
     
     expand(expandable: IExpandable): Promise<void>;
     
@@ -30,6 +30,7 @@ interface IExpando extends Div {
 
 const Expando = elem({id: 'expando'}) as IExpando;
 Expando.expanded = false;
+Expando.pointerHovering = false;
 Expando
     .on({
         click: (ev: MouseEvent) => {
@@ -37,10 +38,17 @@ Expando
             ev.stopImmediatePropagation();
         },
         pointerenter: (ev: PointerEvent) => {
-            console.log('Expando pointerenter');
+            console.log(...bold('Expando pointerenter (XPE)'));
+            Expando.pointerHovering = true;
+            if (Expando.expanded === false) {
+                console.error('XPE | Expando pointerenter but was NOT expanded')
+            } else {
+            
+            }
         },
         pointerleave: (ev: PointerEvent) => {
-            console.log('Expando pointerleave');
+            console.log(...bold('Expando pointerleave (XPL)'));
+            Expando.pointerHovering = false;
             
         }
         
@@ -48,7 +56,7 @@ Expando
 Expando.close = function () {
     App.removeClass('unfocused');
     this
-        .addClass('collapsed')
+        .replaceClass('expanded', 'collapsed')
         .on({
             transitionend: () => {
                 console.log('Expando transitionend');
@@ -60,33 +68,15 @@ Expando.close = function () {
 Expando.expand = async function (expandable: IExpandable) {
     console.log('%cExpando.expand(expandable)', 'color: #ffb02e');
     const text = fromExpandableToText(expandable);
-    /*const ms = 20;
-    const loops = 400 / ms;
-    let count = 0;
-    console.log('before while');
-    App.addClass('will-change-filter');
-    while (count < loops) {
-        if (!expandable.pointerHovering) {
-            console.log('breaking');
-            App.removeClass('will-change-filter');
-            return;
-        }
-        await wait(ms);
-        count++;
-    }
-    console.log('done while');
-    */
-    
     this.expanded = true;
     App
+        .addClass('unfocused')
         .on({
             // filter
             transitionend: () => {
-                console.log('App transitionend');
-                // App.removeClass('will-change-filter');
+                console.log('App transitionend (filter)');
             }
-        }, {once: true})
-        .addClass('unfocused');
+        }, {once: true});
     
     
     // 30px
@@ -95,7 +85,7 @@ Expando.expand = async function (expandable: IExpandable) {
     const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
     this
         .removeAttr('hidden')
-        .removeClass('collapsed')
+        .replaceClass('collapsed', 'expanded')
         .css({
             top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
             marginLeft: `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
@@ -111,11 +101,11 @@ interface IExpandable extends BetterHTMLElement {
 }
 
 const expandables = Array.from(document.querySelectorAll('.expandable'))
-    .map(exp => elem({htmlElement: exp as HTMLElement}) as IExpandable);
+    .map(expandable => elem({htmlElement: expandable as HTMLElement}) as IExpandable);
 
 
-function fromExpandableToText(exp: BetterHTMLElement): string {
-    const cls = exp.class().filter(cls => cls !== 'expandable')[0]; // assume eg "expandable bingoal"
+function fromExpandableToText(expandable: IExpandable): string {
+    const cls = expandable.class().filter(cls => cls !== 'expandable')[0]; // assume eg "expandable bingoal"
     switch (cls) {
         case 'bingoal':
             return `I’m the lead developer of <span class="italic">Bingoal</span>, a second-screen, real-time, multiplayer gaming startup.
@@ -142,16 +132,31 @@ for (let expandable of expandables) {
     
     expandable.on({
         pointerenter: (ev: PointerEvent) => {
+            console.log(...bold('expandable pointerenter (EPE)'));
             if (Expando.expanded) {
-                console.log('expandable pointerenter, Expando.expanded => returning');
-                return;
+                console.log('EPE | Expando.expanded => returning');
+            } else {
+                expandable.pointerHovering = true;
+                Expando.expand(expandable);
             }
-            expandable.pointerHovering = true;
-            Expando.expand(expandable);
+            console.log('EPE | ', {
+                'expandable.pointerHovering': expandable.pointerHovering,
+                Expando: {
+                    expanded: Expando.expanded,
+                    pointerHovering: Expando.pointerHovering
+                }
+            });
             
         },
         pointerleave: (ev: PointerEvent) => {
-            console.log('expandable pointerleave');
+            console.log(...bold('expandable pointerleave (EPL)'), {
+                'expandable.pointerHovering': expandable.pointerHovering,
+                Expando: {
+                    expanded: Expando.expanded,
+                    pointerHovering: Expando.pointerHovering
+                }
+            });
+            
             expandable.pointerHovering = false;
             
         }
