@@ -53,18 +53,33 @@ Expando
         }
         
     });
+
+function onDoneCollapseHide() {
+    console.log('Expando.close() transitionend');
+    Expando.attr({hidden: ''})
+}
+
+function onDoneExpansionAddSlowTransition() {
+    console.log('Expando.expand() transitionend. adding "slow-transition"');
+    Expando.addClass('slow-transition')
+}
+
+function onDonePartialCollapseClose() {
+    console.log('EPL | Expando transitionend. calling Expando.close()');
+    Expando.close();
+}
+
 Expando.close = function () {
     App.removeClass('unfocused');
     this
-        .replaceClass('expanded', 'collapsed')
+        .class('collapsed')
         .on({
-            transitionend: () => {
-                console.log('Expando transitionend');
-                Expando.attr({hidden: ''})
-            }
+            transitionend: onDoneCollapseHide
         }, {once: true});
     this.expanded = false;
 };
+
+
 Expando.expand = async function (expandable: IExpandable) {
     console.log('%cExpando.expand(expandable)', 'color: #ffb02e');
     const text = fromExpandableToText(expandable);
@@ -74,7 +89,7 @@ Expando.expand = async function (expandable: IExpandable) {
         .on({
             // filter
             transitionend: () => {
-                console.log('App transitionend (filter)');
+                console.log('App transitionend (Expando.expand())');
             }
         }, {once: true});
     
@@ -83,7 +98,12 @@ Expando.expand = async function (expandable: IExpandable) {
     const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
     // 44px
     const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
+    
+    
     this
+        .on({
+            transitionend: onDoneExpansionAddSlowTransition
+        }, {once: true})
         .removeAttr('hidden')
         .replaceClass('collapsed', 'expanded')
         .css({
@@ -126,6 +146,7 @@ function fromExpandableToText(expandable: IExpandable): string {
     }
 }
 
+
 for (let expandable of expandables) {
     expandable.pointerHovering = false;
     
@@ -159,6 +180,13 @@ for (let expandable of expandables) {
             
             expandable.pointerHovering = false;
             
+            
+            Expando
+                /*.on({
+                    transitionend: onDonePartialCollapseClose
+                }, {once: true})
+                .addClass('partial-collapse');*/
+                .close();
         }
     })
 }

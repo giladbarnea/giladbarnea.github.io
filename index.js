@@ -37,15 +37,24 @@ Expando
         Expando.pointerHovering = false;
     }
 });
+function onDoneCollapseHide() {
+    console.log('Expando.close() transitionend');
+    Expando.attr({ hidden: '' });
+}
+function onDoneExpansionAddSlowTransition() {
+    console.log('Expando.expand() transitionend. adding "slow-transition"');
+    Expando.addClass('slow-transition');
+}
+function onDonePartialCollapseClose() {
+    console.log('EPL | Expando transitionend. calling Expando.close()');
+    Expando.close();
+}
 Expando.close = function () {
     App.removeClass('unfocused');
     this
-        .replaceClass('expanded', 'collapsed')
+        .class('collapsed')
         .on({
-        transitionend: () => {
-            console.log('Expando transitionend');
-            Expando.attr({ hidden: '' });
-        }
+        transitionend: onDoneCollapseHide
     }, { once: true });
     this.expanded = false;
 };
@@ -57,12 +66,15 @@ Expando.expand = async function (expandable) {
         .addClass('unfocused')
         .on({
         transitionend: () => {
-            console.log('App transitionend (filter)');
+            console.log('App transitionend (Expando.expand())');
         }
     }, { once: true });
     const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
     const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
     this
+        .on({
+        transitionend: onDoneExpansionAddSlowTransition
+    }, { once: true })
         .removeAttr('hidden')
         .replaceClass('collapsed', 'expanded')
         .css({
@@ -124,6 +136,8 @@ for (let expandable of expandables) {
                 }
             });
             expandable.pointerHovering = false;
+            Expando
+                .close();
         }
     });
 }
