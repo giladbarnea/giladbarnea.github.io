@@ -42,9 +42,9 @@ Expando.close = function () {
     }, { once: true });
     this.expanded = false;
 };
-Expando.expand = async function (exp) {
-    console.log('%cExpando.expand(exp)', 'color: #ffb02e');
-    const text = fromExpandableToText(exp);
+Expando.expand = async function (expandable) {
+    console.log('%cExpando.expand(expandable)', 'color: #ffb02e');
+    const text = fromExpandableToText(expandable);
     this.expanded = true;
     App
         .on({
@@ -54,14 +54,14 @@ Expando.expand = async function (exp) {
     }, { once: true })
         .addClass('unfocused');
     const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
-    let lineHeight = parseInt(getComputedStyle(exp.e).lineHeight);
+    const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
     this
         .removeAttr('hidden')
         .removeClass('collapsed')
         .css({
-        top: `${exp.e.offsetTop + lineHeight + App.e.offsetTop}px`,
-        marginLeft: `${exp.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
-        width: `${exp.e.offsetWidth}px`
+        top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
+        marginLeft: `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
+        width: `${expandable.e.offsetWidth}px`
     })
         .html(text);
 };
@@ -88,20 +88,20 @@ function fromExpandableToText(exp) {
             return '';
     }
 }
-for (let exp of expandables) {
-    exp.pointerHovering = false;
-    exp.on({
+for (let expandable of expandables) {
+    expandable.pointerHovering = false;
+    expandable.on({
         pointerenter: (ev) => {
             if (Expando.expanded) {
-                console.log('exp pointerenter, Expando.expanded => returning');
+                console.log('expandable pointerenter, Expando.expanded => returning');
                 return;
             }
-            exp.pointerHovering = true;
-            Expando.expand(exp);
+            expandable.pointerHovering = true;
+            Expando.expand(expandable);
         },
         pointerleave: (ev) => {
-            console.log('exp pointerleave');
-            exp.pointerHovering = false;
+            console.log('expandable pointerleave');
+            expandable.pointerHovering = false;
         }
     });
 }
