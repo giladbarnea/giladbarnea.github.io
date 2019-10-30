@@ -1,12 +1,3 @@
-.foo {
-  transition: opacity 1s;
-}
-
-.no-js {
-  visibility: hidden;
-  opacity: 0;
-}
-
 @font-face {
   font-family: "WorkSans";
   src: url("Work_Sans/WorkSans-Regular.ttf");
@@ -155,11 +146,6 @@ li {
 
 .italic {
   font-style: italic;
-}
-
-.js {
-  visibility: visible;
-  opacity: 1;
 }
 
 /*# sourceMappingURL=index.css.map */
