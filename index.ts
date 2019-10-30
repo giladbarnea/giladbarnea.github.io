@@ -4,6 +4,7 @@ DocumentElem
     .click(() => {
         if (!Expando.expanded)
             return;
+        console.log('DocumentElem click');
         Expando.close();
     })
     .keydown((event: KeyboardEvent) => {
@@ -29,19 +30,35 @@ interface IExpando extends Div {
 
 const Expando = elem({id: 'expando'}) as IExpando;
 Expando.expanded = false;
+Expando
+    .on({
+        click: (ev: MouseEvent) => {
+            console.log('Expando click');
+            ev.stopImmediatePropagation();
+        },
+        pointerenter: (ev: PointerEvent) => {
+            console.log('Expando pointerenter');
+        },
+        pointerleave: (ev: PointerEvent) => {
+            console.log('Expando pointerleave');
+            
+        }
+        
+    });
 Expando.close = function () {
     App.removeClass('unfocused');
     this
+        .addClass('collapsed')
         .on({
             transitionend: () => {
-                console.log('EXPANDO transitionend');
+                console.log('Expando transitionend');
                 Expando.attr({hidden: ''})
             }
-        }, {once: true})
-        .addClass('collapsed');
+        }, {once: true});
     this.expanded = false;
 };
 Expando.expand = async function (exp: IExpandable) {
+    console.log('%cExpando.expand(exp)', 'color: #ffb02e');
     const text = fromExpandableToText(exp);
     const ms = 20;
     const loops = 400 / ms;
@@ -62,7 +79,7 @@ Expando.expand = async function (exp: IExpandable) {
     App
         .on({
             transitionend: () => {
-                console.log('APP transitionend');
+                console.log('App transitionend');
                 App.removeClass('will-change-filter');
             }
         }, {once: true})
@@ -71,11 +88,13 @@ Expando.expand = async function (exp: IExpandable) {
     
     // 30px
     const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
+    // 44px
+    let lineHeight = parseInt(getComputedStyle(exp.e).lineHeight);
     this
         .removeAttr('hidden')
         .removeClass('collapsed')
         .css({
-            top: `${exp.e.offsetTop + parseInt(getComputedStyle(exp.e).lineHeight) + App.e.offsetTop}px`,
+            top: `${exp.e.offsetTop + lineHeight + App.e.offsetTop}px`,
             marginLeft: `${exp.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
             width: `${exp.e.offsetWidth}px`
         })
@@ -106,7 +125,7 @@ function fromExpandableToText(exp: BetterHTMLElement): string {
 		<p><span class="bold">Tech used</span>: Python 3, Django, Node.js (Electron.js, Piano.js), Bash.</p>
 <p>I’ve also built Dr. Tavor’s personal website.</p>`;
         case 'rox':
-            return `"RealOneX" is an online real estate exchange platform.
+            return `<span class="italic">RealOneX</span> is an online real estate exchange platform.
 <p>I built their serverless infrastructure (Mar-May 19).</p>
 <p><span class="bold">Tech used</span>: Python 3, Docker, AWS (Lambda + S3 + Elastic Beanstalk), Google Photos / Places APIs.</p>`;
         default:
@@ -121,7 +140,7 @@ for (let exp of expandables) {
     exp.on({
         pointerenter: (ev: PointerEvent) => {
             if (Expando.expanded) {
-                console.log('pointerenter, Expando.expanded => returning');
+                console.log('exp pointerenter, Expando.expanded => returning');
                 return;
             }
             exp.pointerHovering = true;
@@ -129,13 +148,13 @@ for (let exp of expandables) {
             
         },
         pointerleave: (ev: PointerEvent) => {
+            console.log('exp pointerleave');
             exp.pointerHovering = false;
-            console.log('pointerleave');
             
         }
     })
 }
-const resumePageLink = elem({id: 'resume_page_link'});
+const cvPageLink = elem({id: 'cv_page_link'});
 
 function buildResumePage() {
     App
@@ -150,7 +169,7 @@ function buildResumePage() {
             elem({tag: 'h5'}).html(`Soon I decided that my music was best left as a hobby, and signed up for a 1-year .NET full-stack course at Sela College.<br>
                                    I graduated by late 2017, got back to Python, and have been working as a full stack developer since,
                                    mostly around web systems.`)
-                .addClass('mb-60'),
+                .addClass('block'),
             elem({tag: 'h5'}).html(`<span class="fontsize-25 indent-30">My experience</span> comes from serveral different jobs.<br>
                                     I held my first position (June 18 --) at a small startup, as the only developer. It's a real-time multiplayer game
                                     for "second screen", where you play against hundreds of other players with your phone, while watching TV. The stack is Python and GCloud.<br>
@@ -165,10 +184,10 @@ function buildResumePage() {
             elem({tag: 'h5'}).html(`I worked as a teaching assistant to Tal Franji in his Spark Big Data Course. This job required of me to learn
                                     the technologies involved very quickly, including basic Scala, and then transfer that knowledge to a class of
                                     experienced developers.`)
-                .addClass('mb-60'),
+                .addClass('block'),
             elem({tag: 'h5'}).html(`<span class="fontsize-25 indent-30">I have a few side-projects</span>, some were created by me,
                                     others I enjoy contributing to.`)
         )
 }
 
-resumePageLink.click(buildResumePage);
+cvPageLink.click(buildResumePage);

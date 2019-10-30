@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html class="no-js foo">
 <head>
+
     <meta charset="utf-8">
     <title>Gilad Barnea</title>
 
@@ -12,7 +13,7 @@
 <body>
 <div id="app">
     <h2>Hi, I’m Gilad.</h2>
-    <div class="h4 mb-60">
+    <div class="h4 block">
         <p>I like creating tools that simplify things.</p>
 
         <p>Most recently, I built a
@@ -23,38 +24,38 @@
 
         <p>I also developed a
             <span class="expandable pyano">piano-teaching app</span>
-           for a neuroscientist at TAU.
+           for a neuroscience lab at TAU.
            We analyzed the subject’s brains, and created prediction models for brain-plasticity.
         </p>
         <p>
-            Earlier this year I freelanced to
+            In early 2018 I freelanced to
             <span class="expandable rox">RealOneX</span>
             , building their serverless infrastructure from ground-up.
         </p>
     </div>
-    <div class="h4 mb-60">
+    <div class="h4 block">
         You can check out some of my side projects:
         <ul>
             <li>
-                <a href="https://npmjs.com/package/pythonlang">pythonlang</a>, a nodejs library that brings Python built-in functions to javascript;
+                <a href="https://npmjs.com/package/pythonlang">pythonlang</a>, an implementation of Python 3 Built-ins in Node.js;
             </li>
             <li>
                 Contribution to <a href="https://github.com/tambien/Piano">Tone.Piano</a>, a piano you can play and program with your actual keyboard;
             </li>
             <li>
-                <a href="https://github.com/giladbarnea/autosyntax">autosyntax</a>, a Python app that converts English sentences to Python code;
+                <a href="https://github.com/giladbarnea/autosyntax">autosyntax</a>, a library that converts English sentences to Python code;
             </li>
             <li>
-                <a href="https://github.com/giladbarnea/ANGRYsearch">angrysearch</a>, a fork of the popular Linux file-searching tool;
+                <a href="https://github.com/giladbarnea/ANGRYsearch">angrysearch</a>, a fork of the popular Linux file-searching utility, written in Python 3;
             </li>
             <li>
-                And <a href="https://github.com/giladbarnea/betterhtmlelement">betterhtmlelement</a>, a high-performance replacement for jquery.
+                And <a href="https://github.com/giladbarnea/betterhtmlelement">betterhtmlelement</a>, a high performance, objects-as-trees alternative to jquery.
             </li>
         </ul>
     </div>
     <div class="h4">
-        If you want to learn more about my background, you can view my
-        <span id="resume_page_link" class="clickable cyan">resume page.</span>
+        To learn more about my background, you can view my
+        <span id="cv_page_link" class="clickable cyan">CV page.</span>
     </div>
 </div>
 <div id="expando" class="collapsed" hidden>
@@ -64,5 +65,12 @@
 
 <script type="text/javascript" src="betterhtmlelement.js" defer></script>
 <script type="text/javascript" src="index.js" defer></script>
+<script defer type="text/javascript">
+	(async function (H) {
+		const promise = new Promise(resolve => setTimeout(resolve, 0));
+		await promise;
+		H.className = H.className.replace(/\bno-js\b/, 'js');
+	})(document.documentElement);
+</script>
 </body>
 </html>
