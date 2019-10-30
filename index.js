@@ -121,7 +121,6 @@ for (let exp of expandables) {
         }
     });
 }
-const cvPageLink = elem({ id: 'cv_page_link' });
 function buildResumePage() {
     App
         .empty()
@@ -145,5 +144,4 @@ function buildResumePage() {
         .addClass('block'), elem({ tag: 'h5' }).html(`<span class="fontsize-25 indent-30">I have a few side-projects</span>, some were created by me,
                                     others I enjoy contributing to.`));
 }
-cvPageLink.click(buildResumePage);
 //# sourceMappingURL=index.js.map

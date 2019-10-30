@@ -154,7 +154,6 @@ for (let exp of expandables) {
         }
     })
 }
-const cvPageLink = elem({id: 'cv_page_link'});
 
 function buildResumePage() {
     App
@@ -190,4 +189,3 @@ function buildResumePage() {
         )
 }
 
-cvPageLink.click(buildResumePage);
