@@ -1,6 +1,5 @@
 const BodyElem = elem({ htmlElement: document.body });
-const DocumentElem = elem({ htmlElement: document.documentElement });
-DocumentElem
+const DocumentElem = elem({ htmlElement: document.documentElement })
     .click(() => {
     if (!Expando.expanded)
         return;
@@ -17,6 +16,7 @@ DocumentElem
 const App = elem({ id: 'app' });
 const Expando = elem({ id: 'expando' });
 Expando.expanded = false;
+Expando.pointerHovering = false;
 Expando
     .on({
     click: (ev) => {
@@ -24,67 +24,70 @@ Expando
         ev.stopImmediatePropagation();
     },
     pointerenter: (ev) => {
-        console.log('Expando pointerenter');
+        console.log(...bold('Expando pointerenter (XPE)'));
+        Expando.pointerHovering = true;
+        if (Expando.expanded === false) {
+            console.error('XPE | Expando pointerenter but was NOT expanded');
+        }
+        else {
+        }
     },
     pointerleave: (ev) => {
-        console.log('Expando pointerleave');
+        console.log(...bold('Expando pointerleave (XPL)'));
+        Expando.pointerHovering = false;
     }
 });
+function onDoneCollapseHide() {
+    console.log('Expando.close() transitionend');
+    Expando.attr({ hidden: '' });
+}
+function onDoneExpansionAddSlowTransition() {
+    console.log('Expando.expand() transitionend. adding "slow-transition"');
+    Expando.addClass('slow-transition');
+}
+function onDonePartialCollapseClose() {
+    console.log('EPL | Expando transitionend. calling Expando.close()');
+    Expando.close();
+}
 Expando.close = function () {
     App.removeClass('unfocused');
     this
-        .addClass('collapsed')
+        .class('collapsed')
         .on({
-        transitionend: () => {
-            console.log('Expando transitionend');
-            Expando.attr({ hidden: '' });
-        }
+        transitionend: onDoneCollapseHide
     }, { once: true });
     this.expanded = false;
 };
-Expando.expand = async function (exp) {
-    console.log('%cExpando.expand(exp)', 'color: #ffb02e');
-    const text = fromExpandableToText(exp);
-    const ms = 20;
-    const loops = 400 / ms;
-    let count = 0;
-    console.log('before while');
-    App.addClass('will-change-filter');
-    while (count < loops) {
-        if (!exp.pointerHovering) {
-            console.log('breaking');
-            App.removeClass('will-change-filter');
-            return;
-        }
-        await wait(ms);
-        count++;
-    }
+Expando.expand = async function (expandable) {
+    console.log('%cExpando.expand(expandable)', 'color: #ffb02e');
+    const text = fromExpandableToText(expandable);
     this.expanded = true;
-    console.log('done while');
     App
+        .addClass('unfocused')
         .on({
         transitionend: () => {
-            console.log('App transitionend');
-            App.removeClass('will-change-filter');
+            console.log('App transitionend (Expando.expand())');
         }
-    }, { once: true })
-        .addClass('unfocused');
+    }, { once: true });
     const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
-    let lineHeight = parseInt(getComputedStyle(exp.e).lineHeight);
+    const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
     this
+        .on({
+        transitionend: onDoneExpansionAddSlowTransition
+    }, { once: true })
         .removeAttr('hidden')
-        .removeClass('collapsed')
+        .replaceClass('collapsed', 'expanded')
         .css({
-        top: `${exp.e.offsetTop + lineHeight + App.e.offsetTop}px`,
-        marginLeft: `${exp.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
-        width: `${exp.e.offsetWidth}px`
+        top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
+        marginLeft: `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
+        width: `${expandable.e.offsetWidth}px`
     })
         .html(text);
 };
 const expandables = Array.from(document.querySelectorAll('.expandable'))
-    .map(exp => elem({ htmlElement: exp }));
-function fromExpandableToText(exp) {
-    const cls = exp.class().filter(cls => cls !== 'expandable')[0];
+    .map(expandable => elem({ htmlElement: expandable }));
+function fromExpandableToText(expandable) {
+    const cls = expandable.class().filter(cls => cls !== 'expandable')[0];
     switch (cls) {
         case 'bingoal':
             return `I’m the lead developer of <span class="italic">Bingoal</span>, a second-screen, real-time, multiplayer gaming startup.
@@ -104,24 +107,40 @@ function fromExpandableToText(exp) {
             return '';
     }
 }
-for (let exp of expandables) {
-    exp.pointerHovering = false;
-    exp.on({
+for (let expandable of expandables) {
+    expandable.pointerHovering = false;
+    expandable.on({
         pointerenter: (ev) => {
+            console.log(...bold('expandable pointerenter (EPE)'));
             if (Expando.expanded) {
-                console.log('exp pointerenter, Expando.expanded => returning');
-                return;
+                console.log('EPE | Expando.expanded => returning');
             }
-            exp.pointerHovering = true;
-            Expando.expand(exp);
+            else {
+                expandable.pointerHovering = true;
+                Expando.expand(expandable);
+            }
+            console.log('EPE | ', {
+                'expandable.pointerHovering': expandable.pointerHovering,
+                Expando: {
+                    expanded: Expando.expanded,
+                    pointerHovering: Expando.pointerHovering
+                }
+            });
         },
         pointerleave: (ev) => {
-            console.log('exp pointerleave');
-            exp.pointerHovering = false;
+            console.log(...bold('expandable pointerleave (EPL)'), {
+                'expandable.pointerHovering': expandable.pointerHovering,
+                Expando: {
+                    expanded: Expando.expanded,
+                    pointerHovering: Expando.pointerHovering
+                }
+            });
+            expandable.pointerHovering = false;
+            Expando
+                .close();
         }
     });
 }
-const cvPageLink = elem({ id: 'cv_page_link' });
 function buildResumePage() {
     App
         .empty()
@@ -145,5 +164,4 @@ function buildResumePage() {
         .addClass('block'), elem({ tag: 'h5' }).html(`<span class="fontsize-25 indent-30">I have a few side-projects</span>, some were created by me,
                                     others I enjoy contributing to.`));
 }
-cvPageLink.click(buildResumePage);
 //# sourceMappingURL=index.js.map

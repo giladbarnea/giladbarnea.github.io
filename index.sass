@@ -1,3 +1,8 @@
+.foo
+	opacity: 0
+	transition: opacity 0.5s ease-in-out
+
+
 @font-face
 	font-family: "WorkSans"
 	src: url("Work_Sans/WorkSans-Regular.ttf")
@@ -120,10 +125,11 @@ li
 	&[hidden]
 		@extend .unclickable
 
+
 	&.collapsed
 		opacity: 0
 
-	&:not([hidden])
+	&.expanded
 		backdrop-filter: blur(5px)
 		background-color: rgba(0, 0, 0, 0.1)
 		//border: 1px solid rgba(255, 255, 255, 0.2)
@@ -132,6 +138,13 @@ li
 		height: auto
 		//opacity: 1
 		z-index: 5
+
+	&.slow-transition
+		transition: border 2s, color 2s
+
+	&.partial-collapse
+		border: 1px solid rgba(255, 176, 46, 0)
+		color: rgba(0, 0, 0, 0)
 
 	& > p
 		margin-block-start: 24px
@@ -185,6 +198,5 @@ li
 
 .italic
 	font-style: italic
-
 
 

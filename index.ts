@@ -1,6 +1,5 @@
 const BodyElem = elem({htmlElement: document.body});
-const DocumentElem = elem({htmlElement: document.documentElement});
-DocumentElem
+const DocumentElem = elem({htmlElement: document.documentElement})
     .click(() => {
         if (!Expando.expanded)
             return;
@@ -22,14 +21,16 @@ const App = elem({id: 'app'});
 // ***  Expando
 interface IExpando extends Div {
     expanded: boolean;
+    pointerHovering: boolean;
     
-    expand(exp: IExpandable): Promise<void>;
+    expand(expandable: IExpandable): Promise<void>;
     
     close(): void;
 }
 
 const Expando = elem({id: 'expando'}) as IExpando;
 Expando.expanded = false;
+Expando.pointerHovering = false;
 Expando
     .on({
         click: (ev: MouseEvent) => {
@@ -37,66 +38,78 @@ Expando
             ev.stopImmediatePropagation();
         },
         pointerenter: (ev: PointerEvent) => {
-            console.log('Expando pointerenter');
+            console.log(...bold('Expando pointerenter (XPE)'));
+            Expando.pointerHovering = true;
+            if (Expando.expanded === false) {
+                console.error('XPE | Expando pointerenter but was NOT expanded')
+            } else {
+            
+            }
         },
         pointerleave: (ev: PointerEvent) => {
-            console.log('Expando pointerleave');
+            console.log(...bold('Expando pointerleave (XPL)'));
+            Expando.pointerHovering = false;
             
         }
         
     });
+
+function onDoneCollapseHide() {
+    console.log('Expando.close() transitionend');
+    Expando.attr({hidden: ''})
+}
+
+function onDoneExpansionAddSlowTransition() {
+    console.log('Expando.expand() transitionend. adding "slow-transition"');
+    Expando.addClass('slow-transition')
+}
+
+function onDonePartialCollapseClose() {
+    console.log('EPL | Expando transitionend. calling Expando.close()');
+    Expando.close();
+}
+
 Expando.close = function () {
     App.removeClass('unfocused');
     this
-        .addClass('collapsed')
+        .class('collapsed')
         .on({
-            transitionend: () => {
-                console.log('Expando transitionend');
-                Expando.attr({hidden: ''})
-            }
+            transitionend: onDoneCollapseHide
         }, {once: true});
     this.expanded = false;
 };
-Expando.expand = async function (exp: IExpandable) {
-    console.log('%cExpando.expand(exp)', 'color: #ffb02e');
-    const text = fromExpandableToText(exp);
-    const ms = 20;
-    const loops = 400 / ms;
-    let count = 0;
-    console.log('before while');
-    App.addClass('will-change-filter');
-    while (count < loops) {
-        if (!exp.pointerHovering) {
-            console.log('breaking');
-            App.removeClass('will-change-filter');
-            return;
-        }
-        await wait(ms);
-        count++;
-    }
+
+
+Expando.expand = async function (expandable: IExpandable) {
+    console.log('%cExpando.expand(expandable)', 'color: #ffb02e');
+    const text = fromExpandableToText(expandable);
     this.expanded = true;
-    console.log('done while');
     App
+        .addClass('unfocused')
         .on({
+            // filter
             transitionend: () => {
-                console.log('App transitionend');
-                App.removeClass('will-change-filter');
+                console.log('App transitionend (Expando.expand())');
             }
-        }, {once: true})
-        .addClass('unfocused');
+        }, {once: true});
     
     
     // 30px
     const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
     // 44px
-    let lineHeight = parseInt(getComputedStyle(exp.e).lineHeight);
+    const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
+    
+    
     this
+        .on({
+            transitionend: onDoneExpansionAddSlowTransition
+        }, {once: true})
         .removeAttr('hidden')
-        .removeClass('collapsed')
+        .replaceClass('collapsed', 'expanded')
         .css({
-            top: `${exp.e.offsetTop + lineHeight + App.e.offsetTop}px`,
-            marginLeft: `${exp.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
-            width: `${exp.e.offsetWidth}px`
+            top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
+            marginLeft: `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
+            width: `${expandable.e.offsetWidth}px`
         })
         .html(text);
 };
@@ -108,11 +121,11 @@ interface IExpandable extends BetterHTMLElement {
 }
 
 const expandables = Array.from(document.querySelectorAll('.expandable'))
-    .map(exp => elem({htmlElement: exp as HTMLElement}) as IExpandable);
+    .map(expandable => elem({htmlElement: expandable as HTMLElement}) as IExpandable);
 
 
-function fromExpandableToText(exp: BetterHTMLElement): string {
-    const cls = exp.class().filter(cls => cls !== 'expandable')[0]; // assume eg "expandable bingoal"
+function fromExpandableToText(expandable: IExpandable): string {
+    const cls = expandable.class().filter(cls => cls !== 'expandable')[0]; // assume eg "expandable bingoal"
     switch (cls) {
         case 'bingoal':
             return `I’m the lead developer of <span class="italic">Bingoal</span>, a second-screen, real-time, multiplayer gaming startup.
@@ -133,28 +146,50 @@ function fromExpandableToText(exp: BetterHTMLElement): string {
     }
 }
 
-for (let exp of expandables) {
-    exp.pointerHovering = false;
+
+for (let expandable of expandables) {
+    expandable.pointerHovering = false;
     
     
-    exp.on({
+    expandable.on({
         pointerenter: (ev: PointerEvent) => {
+            console.log(...bold('expandable pointerenter (EPE)'));
             if (Expando.expanded) {
-                console.log('exp pointerenter, Expando.expanded => returning');
-                return;
+                console.log('EPE | Expando.expanded => returning');
+            } else {
+                expandable.pointerHovering = true;
+                Expando.expand(expandable);
             }
-            exp.pointerHovering = true;
-            Expando.expand(exp);
+            console.log('EPE | ', {
+                'expandable.pointerHovering': expandable.pointerHovering,
+                Expando: {
+                    expanded: Expando.expanded,
+                    pointerHovering: Expando.pointerHovering
+                }
+            });
             
         },
         pointerleave: (ev: PointerEvent) => {
-            console.log('exp pointerleave');
-            exp.pointerHovering = false;
+            console.log(...bold('expandable pointerleave (EPL)'), {
+                'expandable.pointerHovering': expandable.pointerHovering,
+                Expando: {
+                    expanded: Expando.expanded,
+                    pointerHovering: Expando.pointerHovering
+                }
+            });
             
+            expandable.pointerHovering = false;
+            
+            
+            Expando
+                /*.on({
+                    transitionend: onDonePartialCollapseClose
+                }, {once: true})
+                .addClass('partial-collapse');*/
+                .close();
         }
     })
 }
-const cvPageLink = elem({id: 'cv_page_link'});
 
 function buildResumePage() {
     App
@@ -190,4 +225,3 @@ function buildResumePage() {
         )
 }
 
-cvPageLink.click(buildResumePage);
