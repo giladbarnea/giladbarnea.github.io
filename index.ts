@@ -60,7 +60,7 @@ Expando.close = function () {
 Expando.expand = async function (exp: IExpandable) {
     console.log('%cExpando.expand(exp)', 'color: #ffb02e');
     const text = fromExpandableToText(exp);
-    const ms = 20;
+    /*const ms = 20;
     const loops = 400 / ms;
     let count = 0;
     console.log('before while');
@@ -74,13 +74,16 @@ Expando.expand = async function (exp: IExpandable) {
         await wait(ms);
         count++;
     }
-    this.expanded = true;
     console.log('done while');
+    */
+    
+    this.expanded = true;
     App
         .on({
+            // filter
             transitionend: () => {
                 console.log('App transitionend');
-                App.removeClass('will-change-filter');
+                // App.removeClass('will-change-filter');
             }
         }, {once: true})
         .addClass('unfocused');

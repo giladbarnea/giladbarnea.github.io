@@ -45,27 +45,11 @@ Expando.close = function () {
 Expando.expand = async function (exp) {
     console.log('%cExpando.expand(exp)', 'color: #ffb02e');
     const text = fromExpandableToText(exp);
-    const ms = 20;
-    const loops = 400 / ms;
-    let count = 0;
-    console.log('before while');
-    App.addClass('will-change-filter');
-    while (count < loops) {
-        if (!exp.pointerHovering) {
-            console.log('breaking');
-            App.removeClass('will-change-filter');
-            return;
-        }
-        await wait(ms);
-        count++;
-    }
     this.expanded = true;
-    console.log('done while');
     App
         .on({
         transitionend: () => {
             console.log('App transitionend');
-            App.removeClass('will-change-filter');
         }
     }, { once: true })
         .addClass('unfocused');
