@@ -35,7 +35,9 @@ function fromExpandableToText(expandable) {
 <p><span class="bold">Tech used</span>: Python 3, Docker, AWS (Lambda + S3 + Elastic Beanstalk), Google Photos / Places APIs.</p>`;
         case 'pythonlang':
             return `Javascript can behave almost arbitrarily, sometimes.
-            <p>Yes, <code>[] <span class="red">== !</span>[]; <span class="comment">// -> true</span></code>, I’m looking at you.</p>`;
+            <p>Yes, <code class="pointer" onclick="window.open('https://www.youtube.com/watch?v=et8xNAc2ic8')">[] <span class="red">== !</span>[]; <span class="comment">// -> true</span></code>, I’m looking at you.</p>
+            <p>What if it could be more like Python? As consistent, reliable and coherent?</p>
+            <p>I set out to implement Python 3 Built-ins in Javascript. Tests are taken from CPython, PyPy and MyPy. There’s still a lot of work, though.</p>`;
         default:
             return '';
     }
