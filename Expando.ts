@@ -84,6 +84,8 @@ Expando.close = function () {
 Expando.expand = async function (expandable: IExpandable) {
     console.log('%cExpando.expand(expandable)', 'color: #ffb02e');
     const text = fromExpandableToText(expandable);
+    if (text === '')
+        return;
     this.expanded = true;
     App.addClass('unfocused');
     
@@ -101,7 +103,7 @@ Expando.expand = async function (expandable: IExpandable) {
         .css({
             top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
             marginLeft: `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
-            width: `${expandable.e.offsetWidth}px`
+            width: `${expandable.id() === 'autosyntax' ? 519 : expandable.e.offsetWidth}px`
         })
         .html(text);
 };

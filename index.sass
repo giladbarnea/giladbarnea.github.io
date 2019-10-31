@@ -69,6 +69,39 @@ a
 li
 	margin-bottom: 20px
 
+code
+	background-color: rgb(44, 47, 48)
+	color: #D8D6D0
+	padding: 5px 3px
+	letter-spacing: 1px
+	transition: background-color 1.5s ease-out, color 1.2s ease-in-out
+
+
+	& > span
+		//transition: color 1.2s ease-in-out
+
+		&.comment
+			color: #BDB8AF
+
+		&.red
+			color: #DC6372
+
+		&.blue
+			color: #60AFFC
+
+		&.lightblue
+			color: #9CDCFE
+
+		& > span
+			&.yellow
+				color: #DCDCAA
+
+			&.purple
+				color: #9874D0
+
+			&.clay
+				color: #CE9178
+
 .app
 	max-width: 984px
 	margin: 80px auto 60px auto
@@ -97,12 +130,14 @@ li
 		family: monospace
 		size: 16px
 	line-height: 25px
-	min-width: 340px
+	min-width: 380px
 	padding: 30px
 	position: absolute
 	top: 0
 	//transition: border 0.5s 1s, background-color 0.5s ease-out, backdrop-filter 0.5s, color 0.25s ease-in-out 0.15s, opacity 0.25s, box-shadow 1s ease-in 1s
 	transition: border 0.5s ease-out, background-color 0.5s ease-out, color 0.2s ease-in-out, opacity 0.2s ease-out
+
+
 	// BAD
 	//transition: backdrop-filter 1s
 
@@ -129,42 +164,75 @@ li
 	&.collapsed
 		opacity: 0
 
+		& > p > code
+			background-color: rgba(44, 47, 48, 0)
+			color: rgba(0, 0, 0, 0)
+
+			& > span
+				color: rgba(0, 0, 0, 0)
+
+				& > span
+					color: rgba(0, 0, 0, 0)
+
+
 	&.expanded
-		backdrop-filter: blur(5px)
-		background-color: rgba(0, 0, 0, 0.1)
+		backdrop-filter: blur(4px)
+		//background-color: rgba(0, 0, 0, 0.1)
+		//background-color: rgba(0, 0, 0, 0)
 		//border: 1px solid rgba(255, 255, 255, 0.2)
 		border: 1px solid rgba(255, 176, 46, 0.5)
 		color: rgba(255, 255, 255, 1)
 		height: auto
 		//opacity: 1
+
 		z-index: 5
 
 	&.slow-transition-color-border
 		transition: border 1s, color 1s
 
+		& > p > code
+			transition: color 1s, background-color 1s
+
+			& > span
+				transition: color 1s
+
+				& > span
+					transition: color 1s
+
 	&.reset-color-border
 		border: 1px solid rgba(255, 176, 46, 0)
 		color: rgba(0, 0, 0, 0)
 
+		& > p > code
+			background-color: rgba(44, 47, 48, 0)
+			color: rgba(0, 0, 0, 0)
+
+			& > span
+				color: rgba(0, 0, 0, 0)
+
+				& > span
+					color: rgba(0, 0, 0, 0)
+
+
 	& > p
 		margin-block-start: 24px
 
-.mb-10
-	margin-bottom: 10px
-
-.mb-30
-	margin-bottom: 30px
 
 .block
 	margin-bottom: 60px
 
-.indent-30
-	margin-left: 30px
+.indent
+	margin-left: 15px
 
-
-.clickable
-	cursor: pointer
+.underline
 	text-decoration: underline
+
+.pointer
+	cursor: pointer
+
+	&:hover
+		@extend .underline
+
 
 .unclickable
 	pointer-events: none
@@ -187,8 +255,8 @@ li
 	font-size: 25px
 
 .expandable
-	@extend .orange
-	text-decoration: underline
+	@extend .underline
+
 
 .spacy
 	letter-spacing: 0.5px
