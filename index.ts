@@ -79,12 +79,12 @@ function fromExpandableToText(expandable: IExpandable): string {
             const clay = s => `<span class="clay">${s}</span>`;
             return `<span class="italic">betterhtmlelement</span> was born out of frustration with jQuery’s performance and lack of flexibility.
             <p>It does 2 things:</p>
-            <p>1. what jQuery does, but with virtually no performance hit; eg </br></br>
+            <p>1. what jQuery does, but with virtually no performance hit; eg stuff like </br></br>
             <code>${blue("mydiv")}</br>
                 ${indent(`.${yellow('html')}(${clay('"foo"')})</br>`)}
                 ${indent(`.${yellow('class')}(${clay('"bar"')})</br>`)}
                 ${indent(`.${yellow('on')}(${clay('"click"')}, ...)`)}</code> and</br></br>
-            2. recursively handles HTML elements and their child-elements like a tree, which lets you access the whole DOM, down to the bottom, like a regular "dot prop" object.</p>
+            2. recursively handles HTML elements and their child-elements like a tree, which lets you access the whole DOM, down to the last child, like a regular JS "dot prop" object.</p>
             <p>It’s the cornerstone of every web system I’ve built in the past year.</p>`;
         default:
             return ''
