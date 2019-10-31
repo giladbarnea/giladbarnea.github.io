@@ -10,6 +10,8 @@ declare class BadArgumentsAmountError extends Error {
     static getArgsWithValues(passedArgs: object): object;
 }
 
+declare const SVG_NS_URI = "http://www.w3.org/2000/svg";
+
 declare class BetterHTMLElement {
     protected _htmlElement: HTMLElement;
     private readonly _isSvg;
@@ -27,25 +29,25 @@ declare class BetterHTMLElement {
         id: string;
         text?: string;
         cls?: string;
-        children?: TChildrenObj;
+        children?: ChildrenObj;
     });
     /**Get an existing element by `query`. Optionally, set its `text`, `cls` or cache `children`*/
     constructor({query, text, cls, children}: {
         query: QuerySelector;
         text?: string;
         cls?: string;
-        children?: TChildrenObj;
+        children?: ChildrenObj;
     });
     /**Wrap an existing HTMLElement. Optionally, set its `text`, `cls` or cache `children`*/
     constructor({htmlElement, text, cls, children}: {
         htmlElement: HTMLElement;
         text?: string;
         cls?: string;
-        children?: TChildrenObj;
+        children?: ChildrenObj;
     });
     
     /**Return the wrapped HTMLElement*/
-    readonly e: HTMLElement;
+    get e(): HTMLElement;
     
     /**Sets `this._htmlElement` to `newHtmlElement._htmlElement`.
      * Resets `this._cachedChildren` and caches `newHtmlElement._cachedChildren`.
@@ -92,7 +94,7 @@ declare class BetterHTMLElement {
     addClass(cls: string, ...clses: string[]): this;
     
     removeClass(cls: TReturnBoolean, ...clses: TReturnBoolean[]): this;
-    removeClass(cls: string, clses?: string[]): this;
+    removeClass(cls: string, ...clses: string[]): this;
     
     replaceClass(oldToken: TReturnBoolean, newToken: string): this;
     replaceClass(oldToken: string, newToken: string): this;
@@ -162,7 +164,7 @@ declare class BetterHTMLElement {
      * navbar.home.toggleClass("selected");
      * navbar.about.css(...);
      * @see this.child*/
-    cacheChildren(keySelectorObj: TMap<QuerySelector>): BetterHTMLElement;
+    cacheChildren(queryMap: TMap<QuerySelector>): this;
     /**For each `[key, selector]` pair, where `selector` is a recursive `{subselector: keySelectorObj}` object,
      * extract `this.child(subselector)`, store it in `this[key]`, then call `this[key].cacheChildren` passing the recursive object.
      * @example
@@ -193,7 +195,8 @@ declare class BetterHTMLElement {
      * navbar.home.news.css(...);
      * navbar.home.support.pointerdown(...);
      * @see this.child*/
-    cacheChildren(keySelectorObj: TRecMap<QuerySelector>): BetterHTMLElement;
+    cacheChildren(recursiveQueryMap: TRecMap<QuerySelector>): this;
+    cacheChildren(bheMap: TMap<BetterHTMLElement>): this;
     /**For each `[key, selector]` pair, where `selector` is a `BetterHTMLElement`, store it in `this[key]`.
      * @example
      * // Using `cacheChildren` directly
@@ -207,7 +210,7 @@ declare class BetterHTMLElement {
      * const navbar = elem({id: 'navbar', children: { home }});
      * navbar.home.toggleClass("selected");
      * @see this.child*/
-    cacheChildren(keySelectorObj: TRecMap<BetterHTMLElement>): BetterHTMLElement;
+    cacheChildren(recursiveBHEMap: TRecMap<BetterHTMLElement>): this;
     
     /**Remove all children from DOM*/
     empty(): this;
@@ -238,14 +241,13 @@ declare class BetterHTMLElement {
     
     on(evTypeFnPairs: TEventFunctionMap<TEvent>, options?: AddEventListenerOptions): this;
     
-    /**@deprecated*/
-    one(): void;
+    one(evType: TEvent, listener: FunctionRecievesEvent<TEvent>, options?: AddEventListenerOptions): this;
     
     /**Remove `event` from wrapped element's event listeners, but keep the removed listener in cache.
      * This is useful for later unblocking*/
-    blockListener(event: TEvent): this;
+    blockListener(event: any): void | this;
     
-    unblockListener(event: TEvent): this;
+    unblockListener(event: any): void | this;
     
     /** Add a `touchstart` event listener. This is the fast alternative to `click` listeners for mobile (no 300ms wait). */
     touchstart(fn: (ev: TouchEvent) => any, options?: AddEventListenerOptions): this;
@@ -406,21 +408,21 @@ declare function elem({id, text, cls, children}: {
     id: string;
     text?: string;
     cls?: string;
-    children?: TChildrenObj;
+    children?: ChildrenObj;
 }): BetterHTMLElement;
 /**Get an existing element by `query`. Optionally, set its `text`, `cls` or cache `children`*/
 declare function elem({query, text, cls, children}: {
     query: QuerySelector;
     text?: string;
     cls?: string;
-    children?: TChildrenObj;
+    children?: ChildrenObj;
 }): BetterHTMLElement;
 /**Wrap an existing HTMLElement. Optionally, set its `text`, `cls` or cache `children`*/
 declare function elem({htmlElement, text, cls, children}: {
     htmlElement: HTMLElement;
     text?: string;
     cls?: string;
-    children?: TChildrenObj;
+    children?: ChildrenObj;
 }): BetterHTMLElement;
 
 /**Create an Span element. Optionally set its id, text or cls.*/
@@ -438,45 +440,23 @@ declare function paragraph({id, text, cls}?: SubElemConstructor): Paragraph;
 /**Create an Anchor element. Optionally set its id, text, href or cls.*/
 declare function anchor({id, text, cls, href}?: AnchorConstructor): Anchor;
 
-interface TMap<T> {
-    [s: string]: T;
-    
-    [s: number]: T;
-}
+declare function enumerate<T>(obj: T): Enumerated<T>;
 
-interface TRecMap<T> {
-    [s: string]: T | TRecMap<T>;
-    
-    [s: number]: T | TRecMap<T>;
-}
+declare function wait(ms: number): Promise<any>;
 
-declare type TEvent = keyof HTMLElementEventMap;
-declare type TEventFunctionMap<K extends TEvent> = {
-    [P in K]?: (event: HTMLElementEventMap[P]) => void;
-};
-declare type HTMLTag = keyof HTMLElementTagNameMap;
-declare type QuerySelector = HTMLTag | string;
+declare function isArray<T>(obj: any): obj is Array<T>;
 
-interface BaseElemConstructor {
-    id?: string;
-    cls?: string;
-}
+declare function isEmptyArr(collection: any): boolean;
 
-interface SubElemConstructor extends BaseElemConstructor {
-    text?: string | number;
-}
+declare function isEmptyObj(obj: any): boolean;
 
-interface ImgConstructor extends BaseElemConstructor {
-    src?: string;
-}
+declare function isFunction(fn: AnyFunction): fn is AnyFunction;
 
-interface AnchorConstructor extends SubElemConstructor {
-    href?: string;
-}
+declare function isObject(obj: any): boolean;
 
-interface SvgConstructor extends BaseElemConstructor {
-    htmlElement?: SVGElement;
-}
+declare function shallowProperty<T>(key: string): (obj: T) => T extends null ? undefined : T[keyof T];
+
+declare function getLength(collection: any): number;
 
 declare type OmittedCssProps =
     "animationDirection"
@@ -484,7 +464,6 @@ declare type OmittedCssProps =
     | "animationIterationCount"
     | "animationPlayState"
     | "animationTimingFunction"
-    | "bottom"
     | "opacity"
     | "padding"
     | "paddingBottom"
@@ -501,7 +480,6 @@ interface CssOptions extends PartialCssStyleDeclaration {
     animationIterationCount?: number;
     animationPlayState?: AnimationPlayState;
     animationTimingFunction?: AnimationTimingFunction;
-    bottom?: string | number;
     opacity?: string | number;
     padding?: string | number;
     paddingBottom?: string | number;
@@ -554,8 +532,6 @@ interface TransformOptions {
     translateZ?: string;
 }
 
-declare const SVG_NS_URI = "http://www.w3.org/2000/svg";
-
 interface AnimateOptions {
     delay?: string;
     direction?: AnimationDirection;
@@ -575,29 +551,47 @@ interface AnimateOptions {
     timingFunction?: AnimationTimingFunction;
 }
 
-declare type TChildrenObj = TMap<QuerySelector> | TRecMap<QuerySelector>;
-type Enumerated<T> =
-    T extends (infer U)[] ? [number, U][]
-        : T extends TMap<(infer U)> ? [keyof T, U][]
-        : [keyof T, T[keyof T]][];
+interface BaseElemConstructor {
+    id?: string;
+    cls?: string;
+}
 
-declare function enumerate<T>(obj: T): Enumerated<T>;
+interface SubElemConstructor extends BaseElemConstructor {
+    text?: string;
+}
 
-declare function wait(ms: number): Promise<any>;
+interface ImgConstructor extends BaseElemConstructor {
+    src?: string;
+}
 
-declare function isArray<T>(obj: any): obj is Array<T>;
+interface AnchorConstructor extends SubElemConstructor {
+    href?: string;
+}
 
-declare function isEmptyArr(collection: any): boolean;
+interface SvgConstructor extends BaseElemConstructor {
+    htmlElement?: SVGElement;
+}
 
-declare function isEmptyObj(obj: any): boolean;
+interface TMap<T> {
+    [s: string]: T;
+    
+    [s: number]: T;
+}
 
+interface TRecMap<T> {
+    [s: string]: T | TRecMap<T>;
+    
+    [s: number]: T | TRecMap<T>;
+}
+
+declare type TEvent = keyof HTMLElementEventMap;
+declare type FunctionRecievesEvent<K extends TEvent> = (event: HTMLElementEventMap[K]) => void;
+declare type TEventFunctionMap<K extends TEvent> = {
+    [P in K]?: FunctionRecievesEvent<P>;
+};
+declare type HTMLTag = keyof HTMLElementTagNameMap;
+declare type QuerySelector = HTMLTag | string;
+declare type ChildrenObj = TMap<QuerySelector> | TRecMap<QuerySelector>;
+declare type Enumerated<T> = T extends (infer U)[] ? [number, U][] : T extends TMap<(infer U)> ? [keyof T, U][] : T extends boolean ? never : any;
 declare type TReturnBoolean = (s: string) => boolean;
 declare type AnyFunction = (...args: any[]) => any;
-
-declare function isFunction(fn: AnyFunction): fn is AnyFunction;
-
-declare function isObject(obj: any): boolean;
-
-declare function shallowProperty<T>(key: string): (obj: T) => T extends null ? undefined : T[keyof T];
-
-declare function getLength(collection: any): number;

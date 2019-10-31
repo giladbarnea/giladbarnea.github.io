@@ -18,101 +18,6 @@ const DocumentElem = elem({htmlElement: document.documentElement})
     });
 const App = elem({id: 'app'});
 
-// ***  Expando
-interface IExpando extends Div {
-    expanded: boolean;
-    pointerHovering: boolean;
-    
-    expand(expandable: IExpandable): Promise<void>;
-    
-    close(): void;
-}
-
-const Expando = elem({id: 'expando'}) as IExpando;
-Expando.expanded = false;
-Expando.pointerHovering = false;
-Expando
-    .on({
-        click: (ev: MouseEvent) => {
-            console.log('Expando click');
-            ev.stopImmediatePropagation();
-        },
-        pointerenter: (ev: PointerEvent) => {
-            console.log(...bold('Expando pointerenter (XPE)'));
-            Expando.pointerHovering = true;
-            if (Expando.expanded === false) {
-                console.error('XPE | Expando pointerenter but was NOT expanded')
-            } else {
-            
-            }
-        },
-        pointerleave: (ev: PointerEvent) => {
-            console.log(...bold('Expando pointerleave (XPL)'));
-            Expando.pointerHovering = false;
-            
-        }
-        
-    });
-
-function onDoneCollapseHide() {
-    console.log('Expando.close() transitionend');
-    Expando.attr({hidden: ''})
-}
-
-function onDoneExpansionAddSlowTransition() {
-    console.log('Expando.expand() transitionend. adding "slow-transition"');
-    Expando.addClass('slow-transition')
-}
-
-function onDonePartialCollapseClose() {
-    console.log('EPL | Expando transitionend. calling Expando.close()');
-    Expando.close();
-}
-
-Expando.close = function () {
-    App.removeClass('unfocused');
-    this
-        .class('collapsed')
-        .on({
-            transitionend: onDoneCollapseHide
-        }, {once: true});
-    this.expanded = false;
-};
-
-
-Expando.expand = async function (expandable: IExpandable) {
-    console.log('%cExpando.expand(expandable)', 'color: #ffb02e');
-    const text = fromExpandableToText(expandable);
-    this.expanded = true;
-    App
-        .addClass('unfocused')
-        .on({
-            // filter
-            transitionend: () => {
-                console.log('App transitionend (Expando.expand())');
-            }
-        }, {once: true});
-    
-    
-    // 30px
-    const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
-    // 44px
-    const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
-    
-    
-    this
-        .on({
-            transitionend: onDoneExpansionAddSlowTransition
-        }, {once: true})
-        .removeAttr('hidden')
-        .replaceClass('collapsed', 'expanded')
-        .css({
-            top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
-            marginLeft: `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
-            width: `${expandable.e.offsetWidth}px`
-        })
-        .html(text);
-};
 
 // ***  expandables
 interface IExpandable extends BetterHTMLElement {
@@ -150,43 +55,39 @@ function fromExpandableToText(expandable: IExpandable): string {
 for (let expandable of expandables) {
     expandable.pointerHovering = false;
     
-    
     expandable.on({
         pointerenter: (ev: PointerEvent) => {
             console.log(...bold('expandable pointerenter (EPE)'));
             if (Expando.expanded) {
-                console.log('EPE | Expando.expanded => returning');
+                console.log('\tEPE | Expando.expanded => returning');
             } else {
                 expandable.pointerHovering = true;
                 Expando.expand(expandable);
             }
-            console.log('EPE | ', {
+            console.log('\texpandable pointerenter | ', {
                 'expandable.pointerHovering': expandable.pointerHovering,
-                Expando: {
-                    expanded: Expando.expanded,
-                    pointerHovering: Expando.pointerHovering
-                }
+                'Expando.expanded': Expando.expanded,
+                'Expando.pointerHovering': Expando.pointerHovering
             });
             
         },
-        pointerleave: (ev: PointerEvent) => {
+        pointerleave: async (ev: PointerEvent) => {
             console.log(...bold('expandable pointerleave (EPL)'), {
-                'expandable.pointerHovering': expandable.pointerHovering,
-                Expando: {
-                    expanded: Expando.expanded,
-                    pointerHovering: Expando.pointerHovering
-                }
+                'Expando.expanded': Expando.expanded,
             });
-            
             expandable.pointerHovering = false;
-            
-            
-            Expando
-                /*.on({
-                    transitionend: onDonePartialCollapseClose
-                }, {once: true})
-                .addClass('partial-collapse');*/
-                .close();
+            startCancelableFadeout();
+            /*Expando.addClass('reset-color-border');
+            const pointerOnExpando = await waitUntil(() => Expando.pointerHovering, 1000, 10);
+            console.log('\tEPL', {pointerOnExpando});
+            if (pointerOnExpando) {
+                // Immediately fade in, then re-add slow transition
+                Expando.removeClass('slow-transition-color-border', 'reset-color-border');
+                await wait(0);
+                Expando.addClass('slow-transition-color-border');
+            } else {
+                Expando.close();
+            }*/
         }
     })
 }

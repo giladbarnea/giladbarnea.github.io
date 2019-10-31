@@ -14,76 +14,6 @@ const DocumentElem = elem({ htmlElement: document.documentElement })
     }
 });
 const App = elem({ id: 'app' });
-const Expando = elem({ id: 'expando' });
-Expando.expanded = false;
-Expando.pointerHovering = false;
-Expando
-    .on({
-    click: (ev) => {
-        console.log('Expando click');
-        ev.stopImmediatePropagation();
-    },
-    pointerenter: (ev) => {
-        console.log(...bold('Expando pointerenter (XPE)'));
-        Expando.pointerHovering = true;
-        if (Expando.expanded === false) {
-            console.error('XPE | Expando pointerenter but was NOT expanded');
-        }
-        else {
-        }
-    },
-    pointerleave: (ev) => {
-        console.log(...bold('Expando pointerleave (XPL)'));
-        Expando.pointerHovering = false;
-    }
-});
-function onDoneCollapseHide() {
-    console.log('Expando.close() transitionend');
-    Expando.attr({ hidden: '' });
-}
-function onDoneExpansionAddSlowTransition() {
-    console.log('Expando.expand() transitionend. adding "slow-transition"');
-    Expando.addClass('slow-transition');
-}
-function onDonePartialCollapseClose() {
-    console.log('EPL | Expando transitionend. calling Expando.close()');
-    Expando.close();
-}
-Expando.close = function () {
-    App.removeClass('unfocused');
-    this
-        .class('collapsed')
-        .on({
-        transitionend: onDoneCollapseHide
-    }, { once: true });
-    this.expanded = false;
-};
-Expando.expand = async function (expandable) {
-    console.log('%cExpando.expand(expandable)', 'color: #ffb02e');
-    const text = fromExpandableToText(expandable);
-    this.expanded = true;
-    App
-        .addClass('unfocused')
-        .on({
-        transitionend: () => {
-            console.log('App transitionend (Expando.expand())');
-        }
-    }, { once: true });
-    const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
-    const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
-    this
-        .on({
-        transitionend: onDoneExpansionAddSlowTransition
-    }, { once: true })
-        .removeAttr('hidden')
-        .replaceClass('collapsed', 'expanded')
-        .css({
-        top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
-        marginLeft: `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
-        width: `${expandable.e.offsetWidth}px`
-    })
-        .html(text);
-};
 const expandables = Array.from(document.querySelectorAll('.expandable'))
     .map(expandable => elem({ htmlElement: expandable }));
 function fromExpandableToText(expandable) {
@@ -113,31 +43,24 @@ for (let expandable of expandables) {
         pointerenter: (ev) => {
             console.log(...bold('expandable pointerenter (EPE)'));
             if (Expando.expanded) {
-                console.log('EPE | Expando.expanded => returning');
+                console.log('\tEPE | Expando.expanded => returning');
             }
             else {
                 expandable.pointerHovering = true;
                 Expando.expand(expandable);
             }
-            console.log('EPE | ', {
+            console.log('\texpandable pointerenter | ', {
                 'expandable.pointerHovering': expandable.pointerHovering,
-                Expando: {
-                    expanded: Expando.expanded,
-                    pointerHovering: Expando.pointerHovering
-                }
+                'Expando.expanded': Expando.expanded,
+                'Expando.pointerHovering': Expando.pointerHovering
             });
         },
-        pointerleave: (ev) => {
+        pointerleave: async (ev) => {
             console.log(...bold('expandable pointerleave (EPL)'), {
-                'expandable.pointerHovering': expandable.pointerHovering,
-                Expando: {
-                    expanded: Expando.expanded,
-                    pointerHovering: Expando.pointerHovering
-                }
+                'Expando.expanded': Expando.expanded,
             });
             expandable.pointerHovering = false;
-            Expando
-                .close();
+            startCancelableFadeout();
         }
     });
 }
