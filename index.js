@@ -121,21 +121,19 @@ for (let expandable of expandables) {
             }
             console.log('EPE | ', {
                 'expandable.pointerHovering': expandable.pointerHovering,
-                Expando: {
-                    expanded: Expando.expanded,
-                    pointerHovering: Expando.pointerHovering
-                }
+                'Expando.expanded': Expando.expanded,
+                'Expando.pointerHovering': Expando.pointerHovering
             });
         },
-        pointerleave: (ev) => {
-            console.log(...bold('expandable pointerleave (EPL)'), {
-                'expandable.pointerHovering': expandable.pointerHovering,
-                Expando: {
-                    expanded: Expando.expanded,
-                    pointerHovering: Expando.pointerHovering
-                }
+        pointerleave: async (ev) => {
+            console.log(...bold('expandable pointerleave (EPL), calling Expando.close()'), {
+                'Expando.expanded': Expando.expanded,
+                'Expando.pointerHovering': Expando.pointerHovering
             });
             expandable.pointerHovering = false;
+            console.log('before while');
+            await waitUntil(() => Expando.pointerHovering, 200, 10);
+            console.log('after while');
             Expando
                 .close();
         }

@@ -162,24 +162,31 @@ for (let expandable of expandables) {
             }
             console.log('EPE | ', {
                 'expandable.pointerHovering': expandable.pointerHovering,
-                Expando: {
-                    expanded: Expando.expanded,
-                    pointerHovering: Expando.pointerHovering
-                }
+                'Expando.expanded': Expando.expanded,
+                'Expando.pointerHovering': Expando.pointerHovering
             });
             
         },
-        pointerleave: (ev: PointerEvent) => {
-            console.log(...bold('expandable pointerleave (EPL)'), {
-                'expandable.pointerHovering': expandable.pointerHovering,
-                Expando: {
-                    expanded: Expando.expanded,
-                    pointerHovering: Expando.pointerHovering
-                }
+        pointerleave: async (ev: PointerEvent) => {
+            console.log(...bold('expandable pointerleave (EPL), calling Expando.close()'), {
+                'Expando.expanded': Expando.expanded,
+                'Expando.pointerHovering': Expando.pointerHovering
             });
             
             expandable.pointerHovering = false;
-            
+            console.log('before while');
+            await waitUntil(() => Expando.pointerHovering, 200, 10);
+            /*const dur = 200;
+            const breathEvery = 10;
+            const loops = dur / breathEvery;
+            let count = 0;
+            while (count < loops) {
+                await wait(breathEvery);
+                if (Expando.pointerHovering)
+                    return;
+                count++;
+            }*/
+            console.log('after while');
             
             Expando
                 /*.on({
