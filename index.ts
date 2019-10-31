@@ -67,7 +67,10 @@ function fromExpandableToText(expandable: IExpandable): string {
             <p>I wanted a way to avoid typing boilerplate code. Especially when it didn’t do much and consisted of many awkward keystrokes.</p>
             <p>So I built a tool that "understands" whitespace-separated words and turns them into Python.</p>
             <img src="autosyntax2.gif">`;
-        
+        case 'angrysearch':
+            return `Windows has an excellent search app called ${italic('Everything')}.
+            <p>${italic('angrysearch')} gets it right for the most part, but I missed the way ${italic('Everything')} lets your filter and manipulate results.</p>
+            <p>${italic('angrysearch')}’s last commit was in July 2018, so I forked it and expanded on it.</p>`;
         case 'betterhtmlelement':
             const indent = s => `<span class="indent">${s}</span>`;
             const blue = s => `<span class="lightblue">${s}</span>`;

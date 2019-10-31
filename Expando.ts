@@ -60,7 +60,7 @@ function onDoneExpansion_AddSlowColorBorderTransition() {
 
 async function startCancelableFadeout() {
     Expando.addClass('reset-color-border');
-    const pointerOnExpando = await waitUntil(() => Expando.pointerHovering, 500, 10);
+    const pointerOnExpando = await waitUntil(() => Expando.pointerHovering, 300, 10);
     console.log('\tEPL', {pointerOnExpando});
     if (pointerOnExpando) {
         // Immediately fade in, then re-add slow transition
