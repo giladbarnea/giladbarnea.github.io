@@ -237,10 +237,7 @@ declare class BetterHTMLElement {
     parents(): void;
     
     on(evTypeFnPairs: TEventFunctionMap<TEvent>, options?: AddEventListenerOptions): this;
-    
-    /**@deprecated*/
-    one(): void;
-    
+    one(evType: TEvent, listener: HTMLElementEventMap[TEvent], options?: AddEventListenerOptions): void;
     /**Remove `event` from wrapped element's event listeners, but keep the removed listener in cache.
      * This is useful for later unblocking*/
     blockListener(event: TEvent): this;

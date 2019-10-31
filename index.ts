@@ -18,101 +18,6 @@ const DocumentElem = elem({htmlElement: document.documentElement})
     });
 const App = elem({id: 'app'});
 
-// ***  Expando
-interface IExpando extends Div {
-    expanded: boolean;
-    pointerHovering: boolean;
-    
-    expand(expandable: IExpandable): Promise<void>;
-    
-    close(): void;
-}
-
-const Expando = elem({id: 'expando'}) as IExpando;
-Expando.expanded = false;
-Expando.pointerHovering = false;
-Expando
-    .on({
-        click: (ev: MouseEvent) => {
-            console.log('Expando click');
-            ev.stopImmediatePropagation();
-        },
-        pointerenter: (ev: PointerEvent) => {
-            console.log(...bold('Expando pointerenter (XPE)'));
-            Expando.pointerHovering = true;
-            if (Expando.expanded === false) {
-                console.error('XPE | Expando pointerenter but was NOT expanded')
-            } else {
-            
-            }
-        },
-        pointerleave: (ev: PointerEvent) => {
-            console.log(...bold('Expando pointerleave (XPL)'));
-            Expando.pointerHovering = false;
-            
-        }
-        
-    });
-
-function onDoneCollapseHide() {
-    console.log('Expando.close() transitionend');
-    Expando.attr({hidden: ''})
-}
-
-function onDoneExpansionAddSlowTransition() {
-    console.log('Expando.expand() transitionend. adding "slow-transition"');
-    Expando.addClass('slow-transition')
-}
-
-function onDonePartialCollapseClose() {
-    console.log('EPL | Expando transitionend. calling Expando.close()');
-    Expando.close();
-}
-
-Expando.close = function () {
-    App.removeClass('unfocused');
-    this
-        .class('collapsed')
-        .on({
-            transitionend: onDoneCollapseHide
-        }, {once: true});
-    this.expanded = false;
-};
-
-
-Expando.expand = async function (expandable: IExpandable) {
-    console.log('%cExpando.expand(expandable)', 'color: #ffb02e');
-    const text = fromExpandableToText(expandable);
-    this.expanded = true;
-    App
-        .addClass('unfocused')
-        .on({
-            // filter
-            transitionend: () => {
-                console.log('App transitionend (Expando.expand())');
-            }
-        }, {once: true});
-    
-    
-    // 30px
-    const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
-    // 44px
-    const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
-    
-    
-    this
-        .on({
-            transitionend: onDoneExpansionAddSlowTransition
-        }, {once: true})
-        .removeAttr('hidden')
-        .replaceClass('collapsed', 'expanded')
-        .css({
-            top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
-            marginLeft: `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
-            width: `${expandable.e.offsetWidth}px`
-        })
-        .html(text);
-};
 
 // ***  expandables
 interface IExpandable extends BetterHTMLElement {
@@ -150,7 +55,6 @@ function fromExpandableToText(expandable: IExpandable): string {
 for (let expandable of expandables) {
     expandable.pointerHovering = false;
     
-    
     expandable.on({
         pointerenter: (ev: PointerEvent) => {
             console.log(...bold('expandable pointerenter (EPE)'));
@@ -168,32 +72,20 @@ for (let expandable of expandables) {
             
         },
         pointerleave: async (ev: PointerEvent) => {
-            console.log(...bold('expandable pointerleave (EPL), calling Expando.close()'), {
+            console.log(...bold('expandable pointerleave (EPL)'), {
                 'Expando.expanded': Expando.expanded,
-                'Expando.pointerHovering': Expando.pointerHovering
             });
-            
             expandable.pointerHovering = false;
-            console.log('before while');
-            await waitUntil(() => Expando.pointerHovering, 200, 10);
-            /*const dur = 200;
-            const breathEvery = 10;
-            const loops = dur / breathEvery;
-            let count = 0;
-            while (count < loops) {
-                await wait(breathEvery);
-                if (Expando.pointerHovering)
-                    return;
-                count++;
-            }*/
-            console.log('after while');
-            
-            Expando
-                /*.on({
-                    transitionend: onDonePartialCollapseClose
-                }, {once: true})
-                .addClass('partial-collapse');*/
-                .close();
+            Expando.addClass('reset-color-border');
+            const pointerOnExpando = await waitUntil(() => Expando.pointerHovering, 200, 10);
+            console.log({pointerOnExpando});
+            if (!pointerOnExpando)
+                Expando
+                    /*.on({
+                        transitionend: onDoneResetColorBorder_Close
+                    }, {once: true})
+                    .addClass('reset-color-border');*/
+                    .close();
         }
     })
 }
