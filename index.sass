@@ -71,15 +71,36 @@ li
 
 code
 	background-color: rgb(44, 47, 48)
-	padding: 5px 3px
 	color: #D8D6D0
+	padding: 5px 3px
 	letter-spacing: 1px
+	transition: background-color 1.5s ease-out, color 1.2s ease-in-out
 
-	& > span.comment
-		color: #BDB8AF
 
-	& > span.red
-		color: #DC6372
+	& > span
+		//transition: color 1.2s ease-in-out
+
+		&.comment
+			color: #BDB8AF
+
+		&.red
+			color: #DC6372
+
+		&.blue
+			color: #60AFFC
+
+		&.lightblue
+			color: #9CDCFE
+
+		& > span
+			&.yellow
+				color: #DCDCAA
+
+			&.purple
+				color: #9874D0
+
+			&.clay
+				color: #CE9178
 
 .app
 	max-width: 984px
@@ -115,6 +136,8 @@ code
 	top: 0
 	//transition: border 0.5s 1s, background-color 0.5s ease-out, backdrop-filter 0.5s, color 0.25s ease-in-out 0.15s, opacity 0.25s, box-shadow 1s ease-in 1s
 	transition: border 0.5s ease-out, background-color 0.5s ease-out, color 0.2s ease-in-out, opacity 0.2s ease-out
+
+
 	// BAD
 	//transition: backdrop-filter 1s
 
@@ -141,6 +164,17 @@ code
 	&.collapsed
 		opacity: 0
 
+		& > p > code
+			background-color: rgba(44, 47, 48, 0)
+			color: rgba(0, 0, 0, 0)
+
+			& > span
+				color: rgba(0, 0, 0, 0)
+
+				& > span
+					color: rgba(0, 0, 0, 0)
+
+
 	&.expanded
 		backdrop-filter: blur(4px)
 		//background-color: rgba(0, 0, 0, 0.1)
@@ -150,6 +184,7 @@ code
 		color: rgba(255, 255, 255, 1)
 		height: auto
 		//opacity: 1
+
 		z-index: 5
 
 	&.slow-transition-color-border
@@ -160,6 +195,9 @@ code
 
 			& > span
 				transition: color 1s
+
+				& > span
+					transition: color 1s
 
 	&.reset-color-border
 		border: 1px solid rgba(255, 176, 46, 0)
@@ -172,6 +210,9 @@ code
 			& > span
 				color: rgba(0, 0, 0, 0)
 
+				& > span
+					color: rgba(0, 0, 0, 0)
+
 
 	& > p
 		margin-block-start: 24px
@@ -180,8 +221,8 @@ code
 .block
 	margin-bottom: 60px
 
-.indent-30
-	margin-left: 30px
+.indent
+	margin-left: 15px
 
 .underline
 	text-decoration: underline
@@ -215,6 +256,7 @@ code
 
 .expandable
 	@extend .underline
+
 
 .spacy
 	letter-spacing: 0.5px

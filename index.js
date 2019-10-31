@@ -18,6 +18,8 @@ const expandables = Array.from(document.querySelectorAll('.expandable'))
     .map(expandable => elem({ htmlElement: expandable }));
 function fromExpandableToText(expandable) {
     const id = expandable.id();
+    const italic = s => `<span class="italic">${s}</span>`;
+    const bold = s => `<span class="bold">${s}</span>`;
     switch (id) {
         case 'bingoal':
             return `I’m the lead developer of <span class="italic">Bingoal</span>, a second-screen, real-time, multiplayer gaming startup.
@@ -38,6 +40,30 @@ function fromExpandableToText(expandable) {
             <p>Yes, <code class="pointer" onclick="window.open('https://www.youtube.com/watch?v=et8xNAc2ic8')">[] <span class="red">== !</span>[]; <span class="comment">// -> true</span></code>, I’m looking at you.</p>
             <p>What if it could be more like Python? As consistent, reliable and coherent?</p>
             <p>I set out to implement Python 3 Built-ins in Javascript. Tests are taken from CPython, PyPy and MyPy. There’s still a lot of work, though.</p>`;
+        case 'piano':
+            return `<span class="italic">Piano</span> is an open-source Web Audio instrument.
+            <p>I transitioned the project to Typescript, added some features, and improved its compilation and tests.</p>
+            <p>It’s a sublib of <span class="italic">Tone.js</span>.</p>`;
+        case 'autosyntax':
+            return `<span class="italic">autosyntax</span> is my first project.
+            <p>I wanted a way to avoid typing boilerplate code. Especially when it didn’t do much and consisted of many awkward keystrokes.</p>
+            <p>So I built a tool that "understands" whitespace-separated words and turns them into Python.</p>
+            <img src="autosyntax2.gif">`;
+        case 'betterhtmlelement':
+            const indent = s => `<span class="indent">${s}</span>`;
+            const blue = s => `<span class="lightblue">${s}</span>`;
+            const purple = s => `<span class="purple">${s}</span>`;
+            const yellow = s => `<span class="yellow">${s}</span>`;
+            const clay = s => `<span class="clay">${s}</span>`;
+            return `<span class="italic">betterhtmlelement</span> was born out of frustration with jQuery’s performance and lack of flexibility.
+            <p>It does 2 things:</p>
+            <p>1. what jQuery does, but with virtually no performance hit; eg </br></br>
+            <code>${blue("mydiv")}</br>
+                ${indent(`.${yellow('html')}(${clay('"foo"')})</br>`)}
+                ${indent(`.${yellow('class')}(${clay('"bar"')})</br>`)}
+                ${indent(`.${yellow('on')}(${clay('"click"')}, ...)`)}</code> and</br></br>
+            2. recursively handles HTML elements and their child-elements like a tree, which lets you access the whole DOM, down to the bottom, like a regular "dot prop" object.</p>
+            <p>It’s the cornerstone of every web system I’ve built in the past year.</p>`;
         default:
             return '';
     }
@@ -54,16 +80,9 @@ for (let expandable of expandables) {
                 expandable.pointerHovering = true;
                 Expando.expand(expandable);
             }
-            console.log('\texpandable pointerenter | ', {
-                'expandable.pointerHovering': expandable.pointerHovering,
-                'Expando.expanded': Expando.expanded,
-                'Expando.pointerHovering': Expando.pointerHovering
-            });
         },
         pointerleave: async (ev) => {
-            console.log(...bold('expandable pointerleave (EPL)'), {
-                'Expando.expanded': Expando.expanded,
-            });
+            console.log(...bold('expandable pointerleave (EPL)'));
             expandable.pointerHovering = false;
             startCancelableFadeout();
         }
