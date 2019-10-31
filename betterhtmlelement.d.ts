@@ -94,7 +94,7 @@ declare class BetterHTMLElement {
     addClass(cls: string, ...clses: string[]): this;
     
     removeClass(cls: TReturnBoolean, ...clses: TReturnBoolean[]): this;
-    removeClass(cls: string, clses?: string[]): this;
+    removeClass(cls: string, ...clses: string[]): this;
     
     replaceClass(oldToken: TReturnBoolean, newToken: string): this;
     replaceClass(oldToken: string, newToken: string): this;
@@ -241,7 +241,7 @@ declare class BetterHTMLElement {
     
     on(evTypeFnPairs: TEventFunctionMap<TEvent>, options?: AddEventListenerOptions): this;
     
-    one(evType: TEvent, listener: HTMLElementEventMap[TEvent], options?: AddEventListenerOptions): void;
+    one(evType: TEvent, listener: FunctionRecievesEvent<TEvent>, options?: AddEventListenerOptions): this;
     
     /**Remove `event` from wrapped element's event listeners, but keep the removed listener in cache.
      * This is useful for later unblocking*/
@@ -585,8 +585,9 @@ interface TRecMap<T> {
 }
 
 declare type TEvent = keyof HTMLElementEventMap;
+declare type FunctionRecievesEvent<K extends TEvent> = (event: HTMLElementEventMap[K]) => void;
 declare type TEventFunctionMap<K extends TEvent> = {
-    [P in K]?: (event: HTMLElementEventMap[P]) => void;
+    [P in K]?: FunctionRecievesEvent<P>;
 };
 declare type HTMLTag = keyof HTMLElementTagNameMap;
 declare type QuerySelector = HTMLTag | string;

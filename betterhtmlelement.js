@@ -482,7 +482,7 @@ class BetterHTMLElement {
 		const evTypeFnPairs = {};
 		evTypeFnPairs[evType] = listener;
 		options = options === undefined ? { once: true } : Object.assign(Object.assign({}, options), { once: true });
-		this.on(evTypeFnPairs, options);
+		return this.on(evTypeFnPairs, options);
 	}
 
 	/**Remove `event` from wrapped element's event listeners, but keep the removed listener in cache.

@@ -26,9 +26,23 @@ Expando
             
             }
         },
-        pointerleave: (ev: PointerEvent) => {
+        pointerleave: async (ev: PointerEvent) => {
             console.log(...bold('Expando pointerleave (XPL)'));
             Expando.pointerHovering = false;
+            if (Expando.expanded) {
+                startCancelableFadeout();
+                /*Expando.addClass('reset-color-border');
+                const pointerOnExpando = await waitUntil(() => Expando.pointerHovering, 1000, 10);
+                console.log('\tXPL', {pointerOnExpando});
+                if (pointerOnExpando) {
+                    // Immediately fade in, then re-add slow transition
+                    Expando.removeClass('slow-transition-color-border', 'reset-color-border');
+                    await wait(0);
+                    Expando.addClass('slow-transition-color-border');
+                } else {
+                    Expando.close();
+                }*/
+            }
             
         }
         
@@ -44,18 +58,25 @@ function onDoneExpansion_AddSlowColorBorderTransition() {
     Expando.addClass('slow-transition-color-border')
 }
 
-function onDoneResetColorBorder_Close() {
-    console.log('EPL | Expando transitionend. calling Expando.close()');
-    Expando.close();
+async function startCancelableFadeout() {
+    Expando.addClass('reset-color-border');
+    const pointerOnExpando = await waitUntil(() => Expando.pointerHovering, 500, 10);
+    console.log('\tEPL', {pointerOnExpando});
+    if (pointerOnExpando) {
+        // Immediately fade in, then re-add slow transition
+        Expando.removeClass('slow-transition-color-border', 'reset-color-border');
+        await wait(0);
+        Expando.addClass('slow-transition-color-border');
+    } else {
+        Expando.close();
+    }
 }
 
 Expando.close = function () {
     App.removeClass('unfocused');
     this
-        .class('collapsed')
-        .on({
-            transitionend: onDoneCollapse_Hide
-        }, {once: true});
+        .one('transitionend', onDoneCollapse_Hide)
+        .class('collapsed');
     this.expanded = false;
 };
 
@@ -64,14 +85,7 @@ Expando.expand = async function (expandable: IExpandable) {
     console.log('%cExpando.expand(expandable)', 'color: #ffb02e');
     const text = fromExpandableToText(expandable);
     this.expanded = true;
-    App
-        .addClass('unfocused')
-        .on({
-            // filter
-            transitionend: () => {
-                // console.log('App transitionend (Expando.expand())');
-            }
-        }, {once: true});
+    App.addClass('unfocused');
     
     
     // 30px
@@ -81,9 +95,7 @@ Expando.expand = async function (expandable: IExpandable) {
     
     
     this
-        .on({
-            transitionend: onDoneExpansion_AddSlowColorBorderTransition
-        }, {once: true})
+        .one("transitionend", onDoneExpansion_AddSlowColorBorderTransition)
         .removeAttr('hidden')
         .replaceClass('collapsed', 'expanded')
         .css({

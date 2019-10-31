@@ -16,9 +16,12 @@ Expando
         else {
         }
     },
-    pointerleave: (ev) => {
+    pointerleave: async (ev) => {
         console.log(...bold('Expando pointerleave (XPL)'));
         Expando.pointerHovering = false;
+        if (Expando.expanded) {
+            startCancelableFadeout();
+        }
     }
 });
 function onDoneCollapse_Hide() {
@@ -29,35 +32,35 @@ function onDoneExpansion_AddSlowColorBorderTransition() {
     console.log('Expando onDoneExpansion_AddSlowColorBorderTransition(). adding "slow-transition-color-border"');
     Expando.addClass('slow-transition-color-border');
 }
-function onDoneResetColorBorder_Close() {
-    console.log('EPL | Expando transitionend. calling Expando.close()');
-    Expando.close();
+async function startCancelableFadeout() {
+    Expando.addClass('reset-color-border');
+    const pointerOnExpando = await waitUntil(() => Expando.pointerHovering, 500, 10);
+    console.log('\tEPL', { pointerOnExpando });
+    if (pointerOnExpando) {
+        Expando.removeClass('slow-transition-color-border', 'reset-color-border');
+        await wait(0);
+        Expando.addClass('slow-transition-color-border');
+    }
+    else {
+        Expando.close();
+    }
 }
 Expando.close = function () {
     App.removeClass('unfocused');
     this
-        .class('collapsed')
-        .on({
-        transitionend: onDoneCollapse_Hide
-    }, { once: true });
+        .one('transitionend', onDoneCollapse_Hide)
+        .class('collapsed');
     this.expanded = false;
 };
 Expando.expand = async function (expandable) {
     console.log('%cExpando.expand(expandable)', 'color: #ffb02e');
     const text = fromExpandableToText(expandable);
     this.expanded = true;
-    App
-        .addClass('unfocused')
-        .on({
-        transitionend: () => {
-        }
-    }, { once: true });
+    App.addClass('unfocused');
     const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
     const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
     this
-        .on({
-        transitionend: onDoneExpansion_AddSlowColorBorderTransition
-    }, { once: true })
+        .one("transitionend", onDoneExpansion_AddSlowColorBorderTransition)
         .removeAttr('hidden')
         .replaceClass('collapsed', 'expanded')
         .css({

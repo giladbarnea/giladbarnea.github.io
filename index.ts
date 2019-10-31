@@ -59,12 +59,12 @@ for (let expandable of expandables) {
         pointerenter: (ev: PointerEvent) => {
             console.log(...bold('expandable pointerenter (EPE)'));
             if (Expando.expanded) {
-                console.log('EPE | Expando.expanded => returning');
+                console.log('\tEPE | Expando.expanded => returning');
             } else {
                 expandable.pointerHovering = true;
                 Expando.expand(expandable);
             }
-            console.log('EPE | ', {
+            console.log('\texpandable pointerenter | ', {
                 'expandable.pointerHovering': expandable.pointerHovering,
                 'Expando.expanded': Expando.expanded,
                 'Expando.pointerHovering': Expando.pointerHovering
@@ -76,16 +76,18 @@ for (let expandable of expandables) {
                 'Expando.expanded': Expando.expanded,
             });
             expandable.pointerHovering = false;
-            Expando.addClass('reset-color-border');
-            const pointerOnExpando = await waitUntil(() => Expando.pointerHovering, 200, 10);
-            console.log({pointerOnExpando});
-            if (!pointerOnExpando)
-                Expando
-                    /*.on({
-                        transitionend: onDoneResetColorBorder_Close
-                    }, {once: true})
-                    .addClass('reset-color-border');*/
-                    .close();
+            startCancelableFadeout();
+            /*Expando.addClass('reset-color-border');
+            const pointerOnExpando = await waitUntil(() => Expando.pointerHovering, 1000, 10);
+            console.log('\tEPL', {pointerOnExpando});
+            if (pointerOnExpando) {
+                // Immediately fade in, then re-add slow transition
+                Expando.removeClass('slow-transition-color-border', 'reset-color-border');
+                await wait(0);
+                Expando.addClass('slow-transition-color-border');
+            } else {
+                Expando.close();
+            }*/
         }
     })
 }
