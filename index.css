@@ -102,6 +102,10 @@ code > span > span.clay {
 }
 
 @media all and (max-width: 1000px) {
+  img {
+    width: 100%;
+  }
+
   .app, #app {
     margin: 40px 20px 60px 20px;
   }
@@ -209,6 +213,7 @@ code > span > span.clay {
 
 .pointer {
   cursor: pointer;
+  text-decoration: underline;
 }
 @media all and (max-width: 1000px) {
   .pointer {
@@ -231,6 +236,13 @@ code > span > span.clay {
   font-size: 25px;
 }
 
+.expandable.cyan:hover, a.expandable:hover {
+  cursor: pointer;
+}
+.expandable.orange:hover {
+  cursor: default;
+}
+
 .spacy {
   letter-spacing: 0.5px;
 }
@@ -239,6 +251,11 @@ code > span > span.clay {
   font-weight: 600;
 }
 
+@media all and (max-width: 1000px) {
+  .bold {
+    font-weight: 800;
+  }
+}
 .italic {
   font-style: italic;
 }

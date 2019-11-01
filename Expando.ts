@@ -39,11 +39,13 @@ function onDoneCollapse_Hide() {
     Expando.attr({hidden: ''})
 }
 
-function onDoneExpansion_AddSlowColorBorderTransition() {
+function onDoneExpansion_AddSlowColorBorderTransition(expandable: IExpandable) {
     console.log('Expando onDoneExpansion_AddSlowColorBorderTransition(). adding "slow-transition-color-border"');
     Expando.addClass('slow-transition-color-border');
     if (GLOB.isMobile) {
-        Expando.e.scrollIntoView({behavior: "smooth", block: "center"})
+        let block = expandable.id() === "betterhtmlelement" ? "start" : "center";
+        // @ts-ignore
+        Expando.e.scrollIntoView({behavior: "smooth", block})
     }
 }
 
@@ -93,10 +95,10 @@ Expando.expand = async function (expandable: IExpandable) {
         css["width"] = `${expandable.id() === 'autosyntax' ? 519 : expandable.e.offsetWidth}px`;
     }
     this
-        .one("transitionend", onDoneExpansion_AddSlowColorBorderTransition)
+        .one("transitionend", () => onDoneExpansion_AddSlowColorBorderTransition(expandable))
         .removeAttr('hidden')
         .replaceClass('collapsed', 'expanded')
-        .addClass(expandable.e.tagName === "A" ? 'cyan' : 'orange')
+        .addClass(expandable.hasClass('cyan') ? 'cyan' : 'orange')
         .css(css)
         .html(text);
 };

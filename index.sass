@@ -119,6 +119,8 @@ code
 	margin: 80px auto 60px auto
 
 @include MOBILE()
+	img
+		width: 100%
 	.app
 		margin: 40px 20px 60px 20px
 
@@ -234,11 +236,14 @@ code
 .indent
 	margin-left: 15px
 
+// .pointer:hover and .expandable extend .underline
 .underline
 	text-decoration: underline
 
+// linkAttrs (links inside expando)
 .pointer
 	cursor: pointer
+	text-decoration: underline
 
 	&:hover
 		@extend .underline
@@ -247,7 +252,7 @@ code
 	.pointer
 		text-decoration: underline
 
-
+// hidden expando extends unclickable
 .unclickable
 	pointer-events: none
 
@@ -271,12 +276,22 @@ code
 .expandable
 	@extend .underline
 
+	&.cyan:hover
+		cursor: pointer
+
+	&.orange:hover
+		cursor: default
+
 
 .spacy
 	letter-spacing: 0.5px
 
 .bold
 	font-weight: 600
+
+@include MOBILE()
+	.bold
+		font-weight: 800
 
 .italic
 	font-style: italic

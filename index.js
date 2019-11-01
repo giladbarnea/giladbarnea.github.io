@@ -22,56 +22,93 @@ const expandables = Array.from(document.querySelectorAll('.expandable'))
 function fromExpandableToText(expandable) {
     const id = expandable.id();
     const italic = s => `<span class="italic">${s}</span>`;
-    const bold = s => `<span class="bold">${s}</span>`;
-    const linkAttrs = link => `class="pointer" onclick="window.open('${link}')"`;
+    const _bold = s => `<span class="bold">${s}</span>`;
+    const linkAttrs = (link, cls) => `class="pointer ${(cls !== null && cls !== void 0 ? cls : '')}" onclick="window.open('${link}')"`;
+    let link;
     switch (id) {
         case 'bingoal':
             return `I’m the lead developer of ${italic('Bingoal')}, a second-screen, real-time, multiplayer gaming startup.
             <p>I built everything from scratch. The product is being released these days. Development is managed by Tal Franji.</p>
-	<p>${bold('Tech used:')} Python 2 and 3, Google Cloud Platform (AppEngine + Datasatore + Firebase), Typescript.</p>`;
+	<p>${_bold('Tech used:')} Python 2 and 3, Google Cloud Platform (AppEngine + Datasatore + Firebase), Typescript.</p>`;
         case 'pyano':
             return `${italic('Pyano')} is a cross-platform app that teaches piano playing.
             <p>Requested by Dr. Ido Tavor’s lab for neuroscience at TAU.</p>
             <p>Pyano is used to create brain-plasticity prediction models.</p>
-		<p>${bold('Tech used:')} Python 3, Django, Node.js (Electron.js, Piano.js), Bash.</p>
+		<p>${_bold('Tech used:')} Python 3, Django, Node.js (Electron.js, Piano.js), Bash.</p>
 <p>I’ve also built Dr. Tavor’s <span ${linkAttrs('www.tau.ac.il/~idotavor')}>personal website.</span></p>`;
         case 'rox':
             return `${italic('RealOneX')} is an online real estate exchange platform.
 <p>I built their serverless infrastructure (Mar-May 19).</p>
-<p>${bold('Tech used:')} Python 3, Docker, AWS (Lambda + S3 + Elastic Beanstalk), Google Photos / Places APIs.</p>`;
+<p>${_bold('Tech used:')} Python 3, Docker, AWS (Lambda + S3 + Elastic Beanstalk), Google Photos / Places APIs.</p>`;
         case 'pythonlang':
-            return `Javascript can behave almost arbitrarily, sometimes.
+            link = `<p><span ${linkAttrs('https://npmjs.com/package/pythonlang', 'cyan')}>pythonlang source</span></p>`;
+            let pythonlang = `Javascript can behave almost arbitrarily, sometimes.
             <p>Yes, <code ${linkAttrs('https://www.youtube.com/watch?v=et8xNAc2ic8')}>[] <span class="red">== !</span>[]; <span class="comment">// -> true</span></code>, I’m looking at you.</p>
             <p>What if it could be more like Python? As consistent, reliable and coherent?</p>
             <p>I set out to implement Python 3 Built-ins in Javascript. Tests are taken from CPython, PyPy and MyPy. There’s still a lot of work, though.</p>`;
+            if (GLOB.isMobile)
+                pythonlang += link;
+            return pythonlang;
         case 'piano':
-            return `${italic('Piano')} is an open-source Web Audio instrument.
+            link = `<p><span ${linkAttrs('https://github.com/tambien/Piano', 'cyan')}>Piano.js source</span></p>`;
+            let piano = `${italic('Piano')} is an open-source Web Audio instrument.
             <p>I transitioned the project to Typescript, added some features, and improved its compilation and tests.</p>
             <p>It’s a sublib of ${italic('Tone.js')}.</p>`;
+            if (GLOB.isMobile)
+                piano += link;
+            return piano;
         case 'autosyntax':
-            return `${italic('autosyntax')} is my first project.
+            link = `<p><span ${linkAttrs('https://github.com/giladbarnea/autosyntax', 'cyan')}>autosyntax source</span></p>`;
+            let autosyntax = `${italic('autosyntax')} is my first project.
             <p>I wanted a way to avoid typing boilerplate code. Especially when it didn’t do much and consisted of many awkward keystrokes.</p>
             <p>So I built a tool that "understands" whitespace-separated words and turns them into Python.</p>
             <img src="autosyntax2.gif">`;
+            if (GLOB.isMobile)
+                autosyntax += link;
+            return autosyntax;
         case 'angrysearch':
-            return `Windows has an excellent search app called ${italic('Everything')}.
+            link = `<p><span ${linkAttrs('https://github.com/giladbarnea/ANGRYsearch', 'cyan')}>Angrysearch source</span></p>`;
+            let angrysearch = `Windows has an excellent search app called ${italic('Everything')}.
             <p>${italic('angrysearch')} gets it right for the most part, but I missed the way ${italic('Everything')} lets your filter and manipulate results.</p>
             <p>${italic('angrysearch')}’s last commit was in July 2018, so I forked it and expanded on it.</p>`;
+            if (GLOB.isMobile)
+                angrysearch += link;
+            return angrysearch;
         case 'betterhtmlelement':
             const indent = s => `<span class="indent">${s}</span>`;
             const blue = s => `<span class="lightblue">${s}</span>`;
-            const purple = s => `<span class="purple">${s}</span>`;
             const yellow = s => `<span class="yellow">${s}</span>`;
             const clay = s => `<span class="clay">${s}</span>`;
-            return `${italic('betterhtmlelement')} was born out of frustration with jQuery’s performance and lack of flexibility.
+            link = `<p><span ${linkAttrs('https://github.com/giladbarnea/betterhtmlelement', 'cyan')}>BetterHTMLElement source</span></p>`;
+            let betterhtmlelement = `${italic('betterhtmlelement')} was born out of frustration with jQuery’s performance and lack of flexibility.
             <p>It does 2 things:</p>
             <p>1. what jQuery does, but with virtually no performance hit; eg stuff like </br></br>
             <code>${blue("mydiv")}</br>
                 ${indent(`.${yellow('html')}(${clay('"foo"')})</br>`)}
                 ${indent(`.${yellow('class')}(${clay('"bar"')})</br>`)}
                 ${indent(`.${yellow('on')}(${clay('"click"')}, ...)`)}</code> and</br></br>
-            2. recursively handles HTML elements and their child-elements like a tree, which lets you access the whole DOM, down to the last child, like a regular JS "dot prop" object.</p>
+            2. recursively handles HTML elements and their child-elements as a tree, which lets you access the whole DOM, down to the last child, like a regular JS object.</p>
             <p>It’s the cornerstone of every web system I’ve built in the past year.</p>`;
+            if (GLOB.isMobile)
+                betterhtmlelement += link;
+            return betterhtmlelement;
+        default:
+            return '';
+    }
+}
+function fromExpandableToLink(expandable) {
+    const id = expandable.id();
+    switch (id) {
+        case 'pythonlang':
+            return 'https://npmjs.com/package/pythonlang';
+        case 'autosyntax':
+            return 'https://github.com/giladbarnea/autosyntax';
+        case 'piano':
+            return 'https://github.com/tambien/Piano';
+        case 'angrysearch':
+            return 'https://github.com/giladbarnea/ANGRYsearch';
+        case 'betterhtmlelement':
+            return 'https://github.com/giladbarnea/betterhtmlelement';
         default:
             return '';
     }
@@ -81,7 +118,7 @@ for (let expandable of expandables) {
     const start = (ev) => {
         ev.stopPropagation();
         ev.preventDefault();
-        console.log(...bold(`expandable ${ev.type} (EPE)`));
+        console.log(...bold(`expandable (${expandable.e.tagName}) ${ev.type} (EPE)`));
         if (Expando.expanded) {
             console.log('\tEPE | Expando.expanded => returning');
         }
@@ -97,10 +134,14 @@ for (let expandable of expandables) {
     };
     const expandablesEvFnMap = {};
     expandablesEvFnMap[GLOB.pressInAction] = start;
-    if (GLOB.isMobile) {
-    }
-    else {
+    if (!GLOB.isMobile) {
         expandablesEvFnMap[GLOB.pressOutAction] = end;
+        if (expandable.hasClass('cyan')) {
+            expandablesEvFnMap["click"] = (ev) => {
+                console.log(`expandable ${ev.type}`);
+                window.open(fromExpandableToLink(expandable));
+            };
+        }
     }
     expandable.on(expandablesEvFnMap);
 }
