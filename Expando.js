@@ -1,29 +1,27 @@
 const Expando = elem({ id: 'expando' });
 Expando.expanded = false;
 Expando.pointerHovering = false;
-Expando
-    .on({
-    click: (ev) => {
-        console.log('Expando click, stopPropagation to doc');
-        ev.stopPropagation();
-    },
-    pointerenter: (ev) => {
-        console.log(...bold('Expando pointerenter (XPE)'));
-        Expando.pointerHovering = true;
-        if (Expando.expanded === false) {
-            console.error('XPE | Expando pointerenter but was NOT expanded');
-        }
-        else {
-        }
-    },
-    pointerleave: async (ev) => {
-        console.log(...bold('Expando pointerleave (XPL)'));
+const expandoEvFnMap = {};
+if (!GLOB.isMobile) {
+    expandoEvFnMap[GLOB.pressOutAction] = async (ev) => {
+        console.log(...bold(`Expando ${ev.type} (XPL)`));
         Expando.pointerHovering = false;
         if (Expando.expanded) {
             startCancelableFadeout();
         }
+    };
+}
+expandoEvFnMap[GLOB.pressInAction] = (ev) => {
+    console.log(...bold(`Expando ${ev.type} (XPE)`));
+    ev.stopPropagation();
+    Expando.pointerHovering = true;
+    if (Expando.expanded === false) {
+        console.error(`XPE | Expando ${ev.type} but was NOT expanded`);
     }
-});
+    else {
+    }
+};
+Expando.on(expandoEvFnMap);
 function onDoneCollapse_Hide() {
     console.log('Expando.close() transitionend');
     Expando.attr({ hidden: '' });
@@ -31,10 +29,13 @@ function onDoneCollapse_Hide() {
 function onDoneExpansion_AddSlowColorBorderTransition() {
     console.log('Expando onDoneExpansion_AddSlowColorBorderTransition(). adding "slow-transition-color-border"');
     Expando.addClass('slow-transition-color-border');
+    if (GLOB.isMobile) {
+        Expando.e.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
 }
 async function startCancelableFadeout() {
     Expando.addClass('reset-color-border');
-    const pointerOnExpando = await waitUntil(() => Expando.pointerHovering, 300, 10);
+    const pointerOnExpando = await waitUntil(() => Expando.pointerHovering, 200, 10);
     console.log('\tEPL', { pointerOnExpando });
     if (pointerOnExpando) {
         Expando.removeClass('slow-transition-color-border', 'reset-color-border');
@@ -59,12 +60,12 @@ Expando.expand = async function (expandable) {
         return;
     this.expanded = true;
     App.addClass('unfocused');
-    const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
     const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
     const css = {
         top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
     };
     if (!GLOB.isMobile) {
+        const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
         css["marginLeft"] = `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`;
         css["width"] = `${expandable.id() === 'autosyntax' ? 519 : expandable.e.offsetWidth}px`;
     }

@@ -11,31 +11,28 @@ interface IExpando extends Div {
 const Expando = elem({id: 'expando'}) as IExpando;
 Expando.expanded = false;
 Expando.pointerHovering = false;
-Expando
-    .on({
-        click: (ev: MouseEvent) => {
-            console.log('Expando click, stopPropagation to doc');
-            ev.stopPropagation();
-        },
-        pointerenter: (ev: PointerEvent) => {
-            console.log(...bold('Expando pointerenter (XPE)'));
-            Expando.pointerHovering = true;
-            if (Expando.expanded === false) {
-                console.error('XPE | Expando pointerenter but was NOT expanded')
-            } else {
-            
-            }
-        },
-        pointerleave: async (ev: PointerEvent) => {
-            console.log(...bold('Expando pointerleave (XPL)'));
-            Expando.pointerHovering = false;
-            if (Expando.expanded) {
-                startCancelableFadeout();
-            }
-            
+const expandoEvFnMap = {};
+if (!GLOB.isMobile) {
+    expandoEvFnMap[GLOB.pressOutAction] = async (ev: PointerEvent) => {
+        console.log(...bold(`Expando ${ev.type} (XPL)`));
+        
+        Expando.pointerHovering = false;
+        if (Expando.expanded) {
+            startCancelableFadeout();
         }
         
-    });
+    }
+}
+expandoEvFnMap[GLOB.pressInAction] = (ev: PointerEvent) => {
+    console.log(...bold(`Expando ${ev.type} (XPE)`));
+    ev.stopPropagation();
+    Expando.pointerHovering = true;
+    if (Expando.expanded === false) {
+        console.error(`XPE | Expando ${ev.type} but was NOT expanded`)
+    } else {
+    }
+};
+Expando.on(expandoEvFnMap);
 
 function onDoneCollapse_Hide() {
     console.log('Expando.close() transitionend');
@@ -44,12 +41,15 @@ function onDoneCollapse_Hide() {
 
 function onDoneExpansion_AddSlowColorBorderTransition() {
     console.log('Expando onDoneExpansion_AddSlowColorBorderTransition(). adding "slow-transition-color-border"');
-    Expando.addClass('slow-transition-color-border')
+    Expando.addClass('slow-transition-color-border');
+    if (GLOB.isMobile) {
+        Expando.e.scrollIntoView({behavior: "smooth", block: "center"})
+    }
 }
 
 async function startCancelableFadeout() {
     Expando.addClass('reset-color-border');
-    const pointerOnExpando = await waitUntil(() => Expando.pointerHovering, 300, 10);
+    const pointerOnExpando = await waitUntil(() => Expando.pointerHovering, 200, 10);
     console.log('\tEPL', {pointerOnExpando});
     if (pointerOnExpando) {
         // Immediately fade in, then re-add slow transition
@@ -79,18 +79,16 @@ Expando.expand = async function (expandable: IExpandable) {
     App.addClass('unfocused');
     
     
-    // 30px
-    const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
     // 44px
     const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
     
     
     const css = {
         top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
-        // marginLeft: `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
-        // width: `${expandable.id() === 'autosyntax' ? 519 : expandable.e.offsetWidth}px`
     };
     if (!GLOB.isMobile) {
+        // 30px
+        const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
         css["marginLeft"] = `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`;
         css["width"] = `${expandable.id() === 'autosyntax' ? 519 : expandable.e.offsetWidth}px`;
     }
