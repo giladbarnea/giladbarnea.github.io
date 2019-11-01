@@ -1,3 +1,7 @@
+@mixin MOBILE()
+	@media all and (max-width: 1000px)
+		@content
+
 .foo
 	opacity: 0
 	transition: opacity 0.5s ease-in-out
@@ -11,9 +15,6 @@
 	font-family: "WorkSansMedium"
 	src: url("Work_Sans/WorkSans-Medium.ttf")
 
-//@font-face
-	font-family: "WorkSansSemiBold"
-	src: url("Work_Sans/WorkSans-SemiBold.ttf")
 
 /*normalize*/
 h1, h2, h3, h4, h5, h6
@@ -38,12 +39,22 @@ h2
 	letter-spacing: -2px
 	margin-bottom: 60px
 
+@include MOBILE()
+	h2
+		font-size: 44px
+		line-height: 52px
+		margin-bottom: 40px
 
 .h4
 	font:
 		size: 30px
 	line-height: 44px
 	margin-bottom: 40px
+
+@include MOBILE()
+	.h4
+		font-size: 20px
+		line-height: 32px
 
 h4
 	@extend .h4
@@ -105,7 +116,10 @@ code
 .app
 	max-width: 984px
 	margin: 80px auto 60px auto
-//-webkit-user-select: none
+
+@include MOBILE()
+	.app
+		margin: 40px 20px 60px 20px
 
 
 #app
@@ -139,24 +153,6 @@ code
 	//transition: border 0.5s 1s, background-color 0.5s ease-out, backdrop-filter 0.5s, color 0.25s ease-in-out 0.15s, opacity 0.25s, box-shadow 1s ease-in 1s
 	transition: border 0.5s ease-out, background-color 0.5s ease-out, color 0.2s ease-in-out, opacity 0.2s ease-out
 
-
-	// BAD
-	//transition: backdrop-filter 1s
-
-	// GOOD
-	//transition: border 0.5s 1s
-
-	// GOOD
-	//transition: background-color 0.3s ease-in-out 1s
-
-	// GOOD
-	//transition: color 1s 1s
-
-	// GOOD
-	//transition: opacity 1s ease-in 1s
-
-	// GOOD
-	//transition: box-shadow 1s ease-in 1s
 	z-index: -1
 
 	&[hidden]
@@ -224,6 +220,12 @@ code
 	& > p
 		margin-block-start: 24px
 
+@include MOBILE()
+	#expando
+		font-size: 14px
+		line-height: 20px
+		min-width: unset
+		width: calc(100% - 80px)
 
 .block
 	margin-bottom: 60px

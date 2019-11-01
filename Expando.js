@@ -61,16 +61,19 @@ Expando.expand = async function (expandable) {
     App.addClass('unfocused');
     const expandoPaddingLeft = parseInt(getComputedStyle(this.e).paddingLeft);
     const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
+    const css = {
+        top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
+    };
+    if (!GLOB.isMobile) {
+        css["marginLeft"] = `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`;
+        css["width"] = `${expandable.id() === 'autosyntax' ? 519 : expandable.e.offsetWidth}px`;
+    }
     this
         .one("transitionend", onDoneExpansion_AddSlowColorBorderTransition)
         .removeAttr('hidden')
         .replaceClass('collapsed', 'expanded')
         .addClass(expandable.e.tagName === "A" ? 'cyan' : 'orange')
-        .css({
-        top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
-        marginLeft: `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
-        width: `${expandable.id() === 'autosyntax' ? 519 : expandable.e.offsetWidth}px`
-    })
+        .css(css)
         .html(text);
 };
 //# sourceMappingURL=Expando.js.map

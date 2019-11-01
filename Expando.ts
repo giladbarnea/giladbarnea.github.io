@@ -31,17 +31,6 @@ Expando
             Expando.pointerHovering = false;
             if (Expando.expanded) {
                 startCancelableFadeout();
-                /*Expando.addClass('reset-color-border');
-                const pointerOnExpando = await waitUntil(() => Expando.pointerHovering, 1000, 10);
-                console.log('\tXPL', {pointerOnExpando});
-                if (pointerOnExpando) {
-                    // Immediately fade in, then re-add slow transition
-                    Expando.removeClass('slow-transition-color-border', 'reset-color-border');
-                    await wait(0);
-                    Expando.addClass('slow-transition-color-border');
-                } else {
-                    Expando.close();
-                }*/
             }
             
         }
@@ -96,15 +85,20 @@ Expando.expand = async function (expandable: IExpandable) {
     const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
     
     
+    const css = {
+        top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
+        // marginLeft: `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
+        // width: `${expandable.id() === 'autosyntax' ? 519 : expandable.e.offsetWidth}px`
+    };
+    if (!GLOB.isMobile) {
+        css["marginLeft"] = `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`;
+        css["width"] = `${expandable.id() === 'autosyntax' ? 519 : expandable.e.offsetWidth}px`;
+    }
     this
         .one("transitionend", onDoneExpansion_AddSlowColorBorderTransition)
         .removeAttr('hidden')
         .replaceClass('collapsed', 'expanded')
         .addClass(expandable.e.tagName === "A" ? 'cyan' : 'orange')
-        .css({
-            top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
-            marginLeft: `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
-            width: `${expandable.id() === 'autosyntax' ? 519 : expandable.e.offsetWidth}px`
-        })
+        .css(css)
         .html(text);
 };

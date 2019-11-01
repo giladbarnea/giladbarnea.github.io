@@ -1,13 +1,8 @@
 const BodyElem = elem({htmlElement: document.body});
 const DocumentElem = elem({htmlElement: document.documentElement});
 const App = elem({id: 'app'});
+// ! if mobile, has to be pointerdown. otherwise text is selected
 const pressAction = GLOB.isMobile ? "pointerdown" : "pointerenter";
-/*if (GLOB.isMobile || true) {
-    // elem({query: '#app > div:nth-child(2) > p:nth-child(1)'})
-    Array.from(document.querySelectorAll('p'))
-        .map(p => elem({htmlElement: p})
-            .on({touchstart: (ev) => ev.preventDefault()}))
-}*/
 
 const evTypeFnPairs = {};
 evTypeFnPairs[pressAction] = (ev) => {
@@ -105,7 +100,6 @@ for (let expandable of expandables) {
     
     const start = (ev: PointerEvent) => {
         ev.stopPropagation(); // DocumentElem
-        // ev.stopImmediatePropagation(); // DocumentElem
         ev.preventDefault();
         console.log(...bold(`expandable ${ev.type} (EPE)`), ev);
         if (Expando.expanded) {
