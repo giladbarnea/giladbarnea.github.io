@@ -1,19 +1,23 @@
 const BodyElem = elem({ htmlElement: document.body });
-const DocumentElem = elem({ htmlElement: document.documentElement })
-    .click(() => {
-    if (!Expando.expanded)
-        return;
-    console.log('DocumentElem click');
-    Expando.close();
-})
-    .keydown((event) => {
-    if (!Expando.expanded)
-        return;
-    if (event.key === "Escape") {
-        Expando.close();
-    }
-});
+const DocumentElem = elem({ htmlElement: document.documentElement });
 const App = elem({ id: 'app' });
+const pressAction = GLOB.isMobile ? "pointerdown" : "pointerenter";
+const evTypeFnPairs = {};
+evTypeFnPairs[pressAction] = (ev) => {
+    if (!Expando.expanded)
+        return;
+    console.log('DocumentElem click, closing Expando', ev);
+    Expando.close();
+};
+if (!GLOB.isMobile) {
+    evTypeFnPairs["keydown"] = (ev) => {
+        if (!Expando.expanded)
+            return;
+        console.log('DocumentElem click, closing Expando', ev);
+        Expando.close();
+    };
+}
+DocumentElem.on(evTypeFnPairs);
 const expandables = Array.from(document.querySelectorAll('.expandable'))
     .map(expandable => elem({ htmlElement: expandable }));
 function fromExpandableToText(expandable) {
@@ -74,23 +78,28 @@ function fromExpandableToText(expandable) {
 }
 for (let expandable of expandables) {
     expandable.pointerHovering = false;
-    expandable.on({
-        pointerenter: (ev) => {
-            console.log(...bold('expandable pointerenter (EPE)'));
-            if (Expando.expanded) {
-                console.log('\tEPE | Expando.expanded => returning');
-            }
-            else {
-                expandable.pointerHovering = true;
-                Expando.expand(expandable);
-            }
-        },
-        pointerleave: async (ev) => {
-            console.log(...bold('expandable pointerleave (EPL)'));
-            expandable.pointerHovering = false;
-            startCancelableFadeout();
+    const start = (ev) => {
+        ev.stopPropagation();
+        ev.preventDefault();
+        console.log(...bold(`expandable ${ev.type} (EPE)`), ev);
+        if (Expando.expanded) {
+            console.log('\tEPE | Expando.expanded => returning');
         }
-    });
+        else {
+            expandable.pointerHovering = true;
+            Expando.expand(expandable);
+        }
+    };
+    const end = () => {
+        console.log(...bold('expandable pointerleave (EPL)'));
+        expandable.pointerHovering = false;
+        startCancelableFadeout();
+    };
+    const evTypeFnPairs = {};
+    evTypeFnPairs[pressAction] = start;
+    if (!GLOB.isMobile)
+        evTypeFnPairs["pointerleave"] = end;
+    expandable.on(evTypeFnPairs);
 }
 function buildResumePage() {
     App

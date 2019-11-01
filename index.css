@@ -129,10 +129,15 @@ code > span > span.clay {
 }
 #expando.expanded {
   backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 176, 46, 0.5);
   color: white;
   height: auto;
   z-index: 5;
+}
+#expando.expanded.orange {
+  border: 1px solid rgba(255, 176, 46, 0.5);
+}
+#expando.expanded.cyan, a#expando.expanded {
+  border: 1px solid rgba(0, 255, 255, 0.4);
 }
 #expando.slow-transition-color-border {
   transition: border 0.5s, color 0.5s;
@@ -184,7 +189,7 @@ code > span > span.clay {
 }
 
 .cyan, a {
-  color: #00ffff;
+  color: aqua;
 }
 
 .orange {

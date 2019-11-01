@@ -510,12 +510,12 @@ class BetterHTMLElement {
 	/*
     Chronology:
 	mousedown   touchstart	pointerdown
-	mouseenter		        pointerenter
-	mouseleave		        pointerleave
+	mouseenter		         pointerenter
+	mouseleave		         pointerleave
 	mousemove	touchmove	pointermove
-	mouseout		        pointerout
-	mouseover		        pointerover
-	mouseup	    touchend    pointerup
+	mouseout		            pointerout
+	mouseover		         pointerover
+	mouseup	   touchend    pointerup
 	*/
 	/** Add a `touchstart` event listener. This is the fast alternative to `click` listeners for mobile (no 300ms wait). */
 	touchstart(fn, options) {

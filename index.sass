@@ -105,6 +105,8 @@ code
 .app
 	max-width: 984px
 	margin: 80px auto 60px auto
+//-webkit-user-select: none
+
 
 #app
 	@extend .app
@@ -180,12 +182,17 @@ code
 		//background-color: rgba(0, 0, 0, 0.1)
 		//background-color: rgba(0, 0, 0, 0)
 		//border: 1px solid rgba(255, 255, 255, 0.2)
-		border: 1px solid rgba(255, 176, 46, 0.5)
 		color: rgba(255, 255, 255, 1)
 		height: auto
 		//opacity: 1
 
 		z-index: 5
+
+		&.orange
+			border: 1px solid rgba(255, 176, 46, 0.5)
+
+		&.cyan
+			border: 1px solid rgb(0, 255, 255, 0.4)
 
 	&.slow-transition-color-border
 		transition: border 0.5s, color 0.5s
@@ -238,7 +245,7 @@ code
 	pointer-events: none
 
 .cyan
-	color: #00ffff
+	color: rgb(0, 255, 255)
 
 .orange
 	//color: #FFAA1C

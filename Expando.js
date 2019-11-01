@@ -65,6 +65,7 @@ Expando.expand = async function (expandable) {
         .one("transitionend", onDoneExpansion_AddSlowColorBorderTransition)
         .removeAttr('hidden')
         .replaceClass('collapsed', 'expanded')
+        .addClass(expandable.e.tagName === "A" ? 'cyan' : 'orange')
         .css({
         top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
         marginLeft: `${expandable.e.offsetLeft + App.e.offsetLeft - expandoPaddingLeft}px`,
