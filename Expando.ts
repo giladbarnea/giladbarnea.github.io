@@ -2,9 +2,9 @@
 interface IExpando extends Div {
     expanded: boolean;
     pointerHovering: boolean;
-    
+
     expand(expandable: IExpandable): Promise<void>;
-    
+
     close(): void;
 }
 
@@ -15,12 +15,12 @@ const expandoEvFnMap = {};
 if (!GLOB.isMobile) {
     expandoEvFnMap[GLOB.pressOutAction] = async (ev: PointerEvent) => {
         console.log(...bold(`Expando ${ev.type} (XPL)`));
-        
+
         Expando.pointerHovering = false;
         if (Expando.expanded) {
             startCancelableFadeout();
         }
-        
+
     }
 }
 expandoEvFnMap[GLOB.pressInAction] = (ev: PointerEvent) => {
@@ -54,6 +54,7 @@ async function startCancelableFadeout() {
     const pointerOnExpando = await waitUntil(() => Expando.pointerHovering, 200, 10);
     console.log('\tEPL', {pointerOnExpando});
     if (pointerOnExpando) {
+        await wait(2000);
         // Immediately fade in, then re-add slow transition
         Expando.removeClass('slow-transition-color-border', 'reset-color-border');
         await wait(0);
@@ -79,12 +80,12 @@ Expando.expand = async function (expandable: IExpandable) {
         return;
     this.expanded = true;
     App.addClass('unfocused');
-    
-    
+
+
     // 44px
     const lineHeight = parseInt(getComputedStyle(expandable.e).lineHeight);
-    
-    
+
+
     const css = {
         top: `${expandable.e.offsetTop + lineHeight + App.e.offsetTop}px`,
     };
