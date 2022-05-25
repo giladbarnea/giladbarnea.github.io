@@ -27,9 +27,6 @@ function fromExpandableToText(expandable) {
     const linkAttrs = (link, cls) => `class="pointer ${(cls !== null && cls !== void 0 ? cls : '')}" onclick="window.open('${link}')"`;
     let link;
     switch (id) {
-        case 'rapyd':
-            return `<span ${linkAttrs('https://www.rapyd.net/')}>A global fintech startup</span>. I’m Working on the reconciliation team alongside two other developers.
-<p>${_bold('Tech used:')} Python, MySQL, AWS.</p>`;
         case 'bingoal':
             return `I was the lead developer of <span ${linkAttrs('https://sport1.maariv.co.il/world-football/German-league/Article-825287')}>Bingoal</span>, a second-screen, real-time, multiplayer gaming startup.
             <p>I built everything from scratch; it took 1.5 years. It’s now served through <span class="italic">Sport1.</span></p>
