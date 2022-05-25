@@ -1,4 +1,4 @@
-// ***  Expando
+// *** Expando
 interface IExpando extends Div {
     expanded: boolean;
     pointerHovering: boolean;
